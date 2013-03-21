@@ -1,0 +1,12 @@
+<company>
+<staff id='1'>
+    <name>Michael Yu</name>
+    <position>developer</position>
+</staff>
+
+<staff id='2'>
+    <name>Steve Jones</name>
+    <position>Project Manager</position>
+</staff>
+
+</company>
