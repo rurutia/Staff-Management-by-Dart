@@ -11,9 +11,7 @@ void main() {
       HttpRequest.request("/staffsInfo?start=0&count=0").then(
         (request) {
           document.body.appendHtml(request.responseText);
-          String str = '{"0":{"name":"Michael Yu","position":"developer"},"1":{"name":"Steve Jones","position":"Project Manager"}}';
-		  str = request.responseText;
-		  renderTable(str);
+		  renderTable(request.responseText);
         });
     }).catchError((e){
     	window.alert("error detected: ${e.toString()}");

@@ -22,7 +22,6 @@ void loadStaffsInfo(HttpConnect connect) {
   connect.response
     ..headers.contentType = contentTypes["json"]
     ..write(jsonResponse);
-    //..write(u.toString());
   connect.close();
 }
 
