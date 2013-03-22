@@ -1,6 +1,26 @@
-* {
-line-height: 1.6;
-font: 13px Helvetica, arial, freesans, clean, sans-serif;
+/* Reset default browser CSS. */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  border: 0;
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 100%;
+  font-style: inherit;
+  font-weight: inherit;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+/* global styles */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 h1 {
   font-size: 28px;
@@ -14,3 +34,39 @@ h3 {
   font-size: 18px;
   margin: 13px 0 6px;
 }
+section {
+  margin: 0 auto;
+  width: 960px;
+}
+/* title styles */
+#app-title {
+  text-align: center;
+}
+/* staff table styles */
+#staff-table {
+  margin: 0 auto;
+  border:1px solid black;
+}
+#staff-table th {
+  padding:5px;
+  border:1px solid black;
+  font-size: 18px;
+  font-weight: bold; 
+  background-color: #ccc;
+}
+#staff-table td {
+  padding:5px;
+  border:1px solid black;
+  font-size: 16px;
+  text-align: center;
+}
+/* control area */
+#control-container {
+  margin: 0 auto;
+  padding-top: 10px;
+  width: 400px;
+}
+button#previous, button#next {
+  width:80px;
+}
+ 

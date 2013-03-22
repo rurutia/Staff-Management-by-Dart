@@ -5,10 +5,28 @@
     <link href="main.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-   <h1>Staff Management Application</h1>
-    <button id="display">Display Staff Details</button>
-    <script type="application/dart" src="staff.dart"></script>
-    <script src="dart.js""></script>
+  <section id="content" >
+    <h1 id="app-title">Staff Management Application</h1>
+    <table id="staff-table">
+        <tr><th>Name</th><th>Position</th><th>Year Join</th></tr>
+    </table>
+  </section>
+  <section id="control" >
+     <div id="control-container" >
+        <button id="previous" disabled="true">&lt;&lt;Previous</button>
+        <button id="display">Display Staff Records</button>
+        <select>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5" selected="selected">5</option>
+        </select>
+        <button id="previous" disabled="true">&gt;&gt;Next</button>
+      <div>
+  </section>
+  <script type="application/dart" src="staff.dart"></script>
+  <script src="dart.js""></script>
 </p>
   </body>
 </html>
