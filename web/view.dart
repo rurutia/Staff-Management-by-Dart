@@ -1,8 +1,10 @@
 // render view by processing jason response from server
 part of staff_management_client;
 
+// render view 
 void updateView(String jsonResponse) {
 	renderTable(jsonResponse);
+	// debug info will be removed in production mode
 	renderDebugInfo("json", jsonResponse);
     renderDebugInfo("client", "start_index = ${start} & count_per_page = ${count}");
 }
