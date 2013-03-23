@@ -2,5 +2,7 @@ name: staff
 version: 1.0.0
 description: Staff Management Application
 dependencies:
+  browser: any
+  js: any
   stream: any
   xml: any
