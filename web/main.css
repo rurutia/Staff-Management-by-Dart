@@ -34,6 +34,9 @@ h3 {
   font-size: 18px;
   margin: 13px 0 6px;
 }
+label {
+  font-size: 14px;
+}
 section {
   margin: 0 auto;
   width: 960px;
@@ -42,6 +45,10 @@ section {
 #app-title {
   text-align: center;
 }
+/* content area */
+#content {
+  height: 300px; 
+}
 /* staff table styles */
 #staff-table {
   margin: 0 auto;
@@ -49,6 +56,7 @@ section {
 }
 #staff-table th {
   padding:5px;
+  width:170px;
   border:1px solid black;
   font-size: 18px;
   font-weight: bold; 
@@ -56,6 +64,7 @@ section {
 }
 #staff-table td {
   padding:5px;
+  width:170px;
   border:1px solid black;
   font-size: 16px;
   text-align: center;
@@ -64,9 +73,9 @@ section {
 #control-container {
   margin: 0 auto;
   padding-top: 10px;
-  width: 400px;
+  width: 500px;
 }
 button#previous, button#next {
-  width:80px;
+  width: 80px;
 }
  

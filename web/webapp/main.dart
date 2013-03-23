@@ -40,7 +40,7 @@ String getStaffsFromXML(int start, int count) {
    if( start >= allNodes.length) 
      return "Error: can not list staffs from the index specified.";
    // staff end index can not be more than the number of staffs in XML
-   int end = (start + count - 1) > allNodes.length ? allNodes.length : (start + count);
+   int end = (start + count ) > allNodes.length ? allNodes.length : (start + count);
    // if count is 0, get all staff records
    if( count == 0 ) end = allNodes.length;
     
@@ -56,6 +56,8 @@ String getStaffsFromXML(int start, int count) {
       data[i.toString()] = map; 
     }
   
+  if( start > 0 ) data['previous'] = true;
+  if( end < allNodes.length ) data['next'] = true;
   return Json.stringify(data);
 }
 

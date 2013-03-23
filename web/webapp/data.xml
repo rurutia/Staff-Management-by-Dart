@@ -1,20 +1,37 @@
 <company>
 <staff id='1'>
+	<employeeno>101</employeeno>
     <name>Michael Yu</name>
     <position>Developer</position>
     <yearjoin>2013</yearjoin>
 </staff>
 
 <staff id='2'>
+	<employeeno>102</employeeno>
     <name>Steve Jones</name>
     <position>Project Manager</position>
     <yearjoin>2006</yearjoin>
 </staff>
 
 <staff id='3'>
+	<employeeno>103</employeeno>
     <name>Bernard Kean</name>
     <position>Database Admin</position>
     <yearjoin>2010</yearjoin>
+</staff>
+
+<staff id='4'>
+	<employeeno>104</employeeno>
+    <name>Julia Anderson</name>
+    <position>Accountant</position>
+    <yearjoin>2011</yearjoin>
+</staff>
+
+<staff id='5'>
+	<employeeno>105</employeeno>
+    <name>Bill Nielson</name>
+    <position>Senior Developer</position>
+    <yearjoin>2007</yearjoin>
 </staff>
 
 </company>
