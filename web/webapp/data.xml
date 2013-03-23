@@ -23,7 +23,7 @@
 <staff id='4'>
 	<employeeno>104</employeeno>
     <name>Julia Anderson</name>
-    <position>Accountant</position>
+    <position>Payroll Accountant</position>
     <yearjoin>2011</yearjoin>
 </staff>
 
@@ -31,7 +31,28 @@
 	<employeeno>105</employeeno>
     <name>Bill Nielson</name>
     <position>Senior Developer</position>
-    <yearjoin>2007</yearjoin>
+    <yearjoin>2004</yearjoin>
+</staff>
+
+<staff id='6'>
+	<employeeno>106</employeeno>
+    <name>Rubin Antler</name>
+    <position>Software Tester</position>
+    <yearjoin>2010</yearjoin>
+</staff>
+
+<staff id='7'>
+	<employeeno>107</employeeno>
+    <name>Mark Kidman</name>
+    <position>UI Designer</position>
+    <yearjoin>1999</yearjoin>
+</staff>
+
+<staff id='8'>
+	<employeeno>108</employeeno>
+    <name>William Chin</name>
+    <position>Operator</position>
+    <yearjoin>2009</yearjoin>
 </staff>
 
 </company>
