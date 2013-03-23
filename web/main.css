@@ -37,13 +37,28 @@ h3 {
 label {
   font-size: 14px;
 }
+button {
+  font-size: 16px;
+}
 section {
   margin: 0 auto;
   width: 960px;
 }
+.warning {
+  color: #ff0000; 
+}
+.display-inline {
+  display: inline;
+}
 /* title styles */
 #app-title {
   text-align: center;
+}
+/* search area */
+#search-container {
+  margin: 0 auto;
+  padding: 10px 0 10px 0;
+  width: 600px;
 }
 /* content area */
 #content {
@@ -69,13 +84,33 @@ section {
   font-size: 16px;
   text-align: center;
 }
+.keyword-found {
+  color: #0000ff;
+  font-weight:bold;
+ }
 /* control area */
 #control-container {
   margin: 0 auto;
-  padding-top: 10px;
-  width: 500px;
+  padding: 10px 0 30px 0;
+  width: 550px;
 }
 button#previous, button#next {
-  width: 80px;
+  width: 105px;
 }
+/* debug area */
+#debug-container {
+  margin: 0 auto;
+  width: 950px;
+  background-color: #2b66c8;
+  color: #fff;
+  border: 2px solid #9a9a9a;
+}
+.debug-title {
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  padding: 0;
+  margin: 0;
+  background-color: #eb66c8;
+}
+
  

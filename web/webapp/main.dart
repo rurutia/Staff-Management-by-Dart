@@ -3,6 +3,7 @@ library staff_management;
 
 import "dart:json" as Json;
 import "dart:io";
+import "dart:uri";
 import "package:stream/stream.dart";
 import "package:xml/xml.dart";
 
@@ -13,11 +14,16 @@ part "utility.dart";
 List<String> xmlcontents = [];
 
 void loadStaffsInfo(HttpConnect connect) {
-  String uri = connect.request.uri.toString();
+  String uri = decodeUriComponent(connect.request.uri.toString());
   int start = UriParamParser.getStart(uri);
   int count = UriParamParser.getCount(uri);
+  String keyword = UriParamParser.getKeyword(uri);
   
-  String jsonResponse = getStaffsFromXML(start, count);
+  String jsonResponse;
+  if(keyword == null)
+    jsonResponse = getStaffsFromXML(start, count);
+  else 
+    jsonResponse = searchStaffsFromXML(start, count, keyword);
 
   connect.response
     ..headers.contentType = contentTypes["json"]
@@ -29,6 +35,33 @@ void main() {
   new StreamServer(uriMapping: _mapping).start();
   // load XML which contains staffs information
   loadXML('webapp/data.xml');
+}
+
+String searchStaffsFromXML(int start, int count, String keyword) {
+  XmlElement xmlDoc = XML.parse( xmlcontents.join(' ') );	
+  Map allStaffs = xmlDoc.queryAll("staff").asMap();
+  
+  int end;
+  // if count is 0, get all staff records
+  if( count == 0 ) end = allStaffs.length;
+  // Parse XML into JSON map 
+  Map data = {};
+  for(var i = start;i < end; i++) {
+    Map attributes = {};
+    bool isFound = false;
+    for(var j = 0;j < allStaffs[i].children.length; j++) {
+      String text = allStaffs[i].children[j].text;
+      if( text.toLowerCase().contains(keyword.toLowerCase()) ) {
+        isFound = true;
+        text = text.toLowerCase().replaceAll(new RegExp(keyword.toLowerCase()), "<span class='keyword-found'>${keyword}</span>");
+      }   
+      String tag = allStaffs[i].children[j].name;
+      attributes[tag] = text;      
+    }
+    if( isFound ) data[i.toString()] = attributes;
+    isFound = false;
+  }
+  return Json.stringify(data);
 }
 
 String getStaffsFromXML(int start, int count) {

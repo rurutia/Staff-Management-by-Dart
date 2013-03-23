@@ -13,6 +13,7 @@ void loadXML(String filename) {
 class UriParamParser {
   static final RegExp startPatt = new RegExp(r"start=\d+");
   static final RegExp countPatt = new RegExp(r"count=\d+");
+  static final RegExp keywordPatt = new RegExp(r"keyword=[\w\s]+");
   
   static int getStart(String uri) {
     int start;
@@ -28,5 +29,13 @@ class UriParamParser {
       count = int.parse(match.group(0).split("=")[1]);
     }
     return count;
+  }
+  
+  static String getKeyword(String uri) {
+    String keyword;
+    for(var match in keywordPatt.allMatches(uri)) {
+      keyword = match.group(0).split("=")[1];
+    }
+    return keyword;
   }
 }

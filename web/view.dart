@@ -1,6 +1,12 @@
 // render view by processing jason response from server
 part of staff_management_client;
 
+void updateView(String jsonResponse) {
+	renderTable(jsonResponse);
+	renderDebugInfo("json", jsonResponse);
+    renderDebugInfo("client", "start_index = ${start} & count_per_page = ${count}");
+}
+
 // render staff records table
 void renderTable(String jsonResponse) {
    TableElement staffTable =  document.query("#staff-table");
@@ -26,10 +32,26 @@ void renderTable(String jsonResponse) {
                          );    
 }
 
+// render debug information (will not be displayed in production mode)
+void renderDebugInfo(String debugType, String message) {
+	document.query("#debug-${debugType}").appendHtml("${message}<br><br>");
+}
+
 // enable or disable pagination control buttons 
 void setupPaginationControl(bool hasPrevious, bool hasNext) {
 	ButtonElement previousBtn = document.query('#previous'); 
 	ButtonElement nextBtn = document.query('#next');
 	previousBtn.disabled = hasPrevious ? false : true;
 	nextBtn.disabled = hasNext ? false : true; 
+}
+
+// toggle search warning message
+void toggleSearchWarning({bool isShown: false , String message: null}) {
+    if( document.query(".warning") != null) {
+        document.query(".warning").remove();
+     }
+    if( isShown ) {
+      document.query("#search-container")
+        .appendHtml('<span class="warning">${message}</span>');   
+    }
 }
