@@ -112,5 +112,8 @@ button#previous, button#next {
   margin: 0;
   background-color: #eb66c8;
 }
+.debug-info {
+  padding-top: 10px;
+}
 
  
