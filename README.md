@@ -1,3 +1,8 @@
+<h3>Heroku Deployment:</h3>
+
+<a href="http://michaelyu.herokuapp.com/">http://michaelyu.herokuapp.com/</a>
+<br>"main.dart" deployed on Heroku specifies different host and port.
+
 <h3>File Structure:</h3>
 
 <br>--<b>web</b>
@@ -11,7 +16,3 @@
 <br>------<b>utility.dart</b>    (unility classes and functions)
 <br>------<b>data.xml</b>    (permanent data store)
 
-<h3>Heroku Deployment:</h3>
-
-<a href="http://michaelyu.herokuapp.com/">http://michaelyu.herokuapp.com/</a>
-<br>"main.dart" specifies different host and port on Heroku.
