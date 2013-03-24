@@ -18,7 +18,7 @@ void renderTable(String jsonResponse) {
    Map staffs = Json.parse(jsonResponse);
 
    for(String key in staffs.keys) {
-     if( key == "next" || key == "previous" ) break;
+     if( key == "total" || key == "next" || key == "previous" ) break;
      Map staff = staffs[key];
      StringBuffer sb = new StringBuffer('<tr>');
      for(String key in staff.keys) {
@@ -28,19 +28,47 @@ void renderTable(String jsonResponse) {
      var row = new Element.html(sb.toString());
      staffTable.append(row);
    }
+                          
+   if( staffs.containsKey("total") ) {
+     total = staffs["total"];
+     updatePagination(total);
+     document.query("#total-count").text = "total records: ${total}";   
+   }   
    
-   setupPaginationControl(staffs.containsKey("previous"),
-                          staffs.containsKey("next")
-                         );    
+   updatePaginationLeftRight(staffs.containsKey("previous"),
+                             staffs.containsKey("next")
+   );    
+   
+   
 }
 
-// render debug information (will not be displayed in production mode)
-void renderDebugInfo(String debugType, String message) {
-	document.query("#debug-${debugType}").appendHtml("${message}<br><br>");
+// update pagination links 
+void updatePagination(int total) {
+  document.query("#pagination-container").innerHtml = '';
+  SelectElement numPerPage = document.query("#number-per-page"); 
+  var count = int.parse(numPerPage.value);
+  var pageCount = (total/count).ceil().toInt();
+  for(var i = 0; i < pageCount; i++) {
+    AnchorElement pageLink = new Element.html('<a class="page-link" href="#">${i+1}</a>');
+    // highlight link to current page
+    if( start == i * count )
+      pageLink.classes.add('page-link-highlight');
+    document.query("#pagination-container").append(pageLink);
+    // register click event to each link   
+    pageLink.onClick.listen((e) {
+    	 start = i * count;
+         String uri = "/staffsInfo?start=${start}&count=${count}";
+         HttpRequest.request(uri).then(
+           (request) {
+              updateView(request.responseText);
+         });
+
+    }); 
+  } // iterate page links
 }
 
 // enable or disable pagination control buttons 
-void setupPaginationControl(bool hasPrevious, bool hasNext) {
+void updatePaginationLeftRight(bool hasPrevious, bool hasNext) {
 	ButtonElement previousBtn = document.query('#previous'); 
 	ButtonElement nextBtn = document.query('#next');
 	previousBtn.disabled = hasPrevious ? false : true;
@@ -56,4 +84,9 @@ void toggleSearchWarning({bool isShown: false , String message: null}) {
       document.query("#search-container")
         .appendHtml('<span class="warning">${message}</span>');   
     }
+}
+
+// render debug information (will not be displayed in production mode)
+void renderDebugInfo(String debugType, String message) {
+	document.query("#debug-${debugType}").appendHtml("${message}<br><br>");
 }

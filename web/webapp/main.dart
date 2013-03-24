@@ -34,7 +34,7 @@ void loadStaffsInfo(HttpConnect connect) {
 void main() {
   new StreamServer(uriMapping: _mapping).start();
   // load XML which contains staffs information
-  loadXML('webapp/data.xml');
+  loadXML('web/webapp/data.xml');
 }
 
 String searchStaffsFromXML(int start, int count, String keyword) {
@@ -88,6 +88,7 @@ String getStaffsFromXML(int start, int count) {
       }
       data[i.toString()] = map; 
     }
+  data['total'] = allNodes.length;
   
   if( start > 0 ) data['previous'] = true;
   if( end < allNodes.length ) data['next'] = true;

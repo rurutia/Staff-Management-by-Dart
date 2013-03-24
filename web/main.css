@@ -44,6 +44,17 @@ section {
   margin: 0 auto;
   width: 960px;
 }
+.align-left {
+  float: left;
+  padding: 8px 0 0 0;
+}
+.align-right {
+  float: right;
+  padding: 8px 0 0 0;
+}
+.clear {
+  clear: both;
+}
 .warning {
   color: #ff0000; 
 }
@@ -54,15 +65,23 @@ section {
 #app-title {
   text-align: center;
 }
-/* search area */
+/* search section */
 #search-container {
   margin: 0 auto;
   padding: 10px 0 10px 0;
   width: 600px;
 }
-/* content area */
+/* content section */
 #content {
-  height: 300px; 
+  position: relative;
+  height: 350px; 
+}
+#loadAnimation {
+   margin: 0 auto;
+   width: 332px; 
+   height: 150px; 
+   background-image: url('loading.gif');
+   background-position: 0px -100px;
 }
 /* staff table styles */
 #staff-table {
@@ -88,16 +107,44 @@ section {
   color: #0000ff;
   font-weight:bold;
  }
-/* control area */
+/* control section */
 #control-container {
   margin: 0 auto;
   padding: 10px 0 30px 0;
+  width: 680px;
+}
+#pagination-container {
+  margin: 0 auto;
+  padding: 10px 0 10px 0;
   width: 550px;
+  text-align: center;
+}
+a.page-link, a.page-link:visited {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 10px 0 10px;
+  padding: 3px 5px 0px 5px;
+}
+a.page-link:hover {
+  color: #ff0000;
+  background: #87a3fe;
+}
+.page-link-highlight {
+  color: #ffffff;
+  background-color: rgb(0, 114, 197);
 }
 button#previous, button#next {
   width: 105px;
 }
-/* debug area */
+#number-per-page-container {
+  text-align: center;
+}
+#total-count {
+  margin-right: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+/* debug section */
 #debug-container {
   margin: 0 auto;
   width: 950px;

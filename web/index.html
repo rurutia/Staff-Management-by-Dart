@@ -15,21 +15,35 @@
        <table id="staff-table">
            <tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th></tr>
        </table>
+       <div id="loadAnimation">
+       </div>
     </section>
     
     <section id="control" >
       <div id="control-container" >
-        <button id="previous" disabled="true">&lt;&lt;Previous</button>
-        <button id="displayAll">Display Records</button>
-        <label for="number-per-page">records per page:</label>
-        <select id="number-per-page">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3"  selected="selected">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-        <button id="next" disabled="true">&gt;&gt;Next</button>
+        <div id="pagination" >
+          <div id="left-button-container" class="align-left" >
+            <button id="previous" disabled="true">&lt;&lt;Previous</button>
+          </div>
+          <div id="right-button-container" class="align-right">
+            <button id="next" disabled="true">&gt;&gt;Next</button>
+          </div>
+          <div id="pagination-container">
+          </div>        
+        </div>
+        <div class="clear"></div>
+        <div id="number-per-page-container">
+          <span id="total-count"></span>
+          <button id="displayAll">Display Records</button>
+          <label for="number-per-page">records per page:</label>
+          <select id="number-per-page">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected="selected">5</option>
+          </select>
+        </div>
       <div>
     </section>
     

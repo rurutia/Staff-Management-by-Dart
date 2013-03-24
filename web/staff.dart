@@ -7,8 +7,8 @@ import "dart:uri";
 
 part "view.dart";
 
-// track index and number of records used for pagination
-int start, count;
+// track index, number of records and total records used for pagination
+int start, count, total;
 
 void main() {
   ButtonElement displayAllBtn = document.query('#displayAll');
@@ -57,6 +57,7 @@ void attachEventLoadStaffs(EventTarget element, String eventType) {
         count = int.parse(numPerPage.value);
         HttpRequest.request("/staffsInfo?start=${start}&count=${count}").then(
           (request) {
+            document.query("#loadAnimation").remove();
 		    updateView(request.responseText);
           });
         }); 
