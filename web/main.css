@@ -69,7 +69,7 @@ section {
 #search-container {
   margin: 0 auto;
   padding: 10px 0 10px 0;
-  width: 600px;
+  width: 800px;
 }
 /* content section */
 #content {
@@ -103,10 +103,24 @@ section {
   font-size: 16px;
   text-align: center;
 }
+.line-through {
+  background: transparent url('http://davidrhysthomas.co.uk/linked/strike.png') 0 50% repeat-x;
+}
 .keyword-found {
-  color: #0000ff;
+  color: #ff0000;
   font-weight:bold;
  }
+/* record command section */
+#command-container {
+  margin: 0 auto;
+  padding: 10px 0 30px 0;
+  width: 680px; 
+}
+#delete {
+  float: right;
+  background-color: #eb66c8;
+  color: #fff;
+}
 /* control section */
 #control-container {
   margin: 0 auto;
@@ -147,6 +161,7 @@ button#previous, button#next {
 /* debug section */
 #debug-container {
   margin: 0 auto;
+  margin-bottom: 20px;
   width: 950px;
   background-color: #2b66c8;
   color: #fff;
