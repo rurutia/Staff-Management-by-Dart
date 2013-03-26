@@ -4,6 +4,7 @@ library staff_management;
 import "dart:json" as Json;
 import "dart:io";
 import "dart:uri";
+import "dart:async";
 import "package:stream/stream.dart";
 import "package:xml/xml.dart";
 
@@ -11,7 +12,8 @@ part "config.dart";
 part "utility.dart";
 
 // XML contents
-List<String> xmlcontents = [];
+XmlElement xmlDoc;
+String test;
 
 void loadStaffsInfo(HttpConnect connect) {
   String uri = decodeUriComponent(connect.request.uri.toString());
@@ -31,21 +33,33 @@ void loadStaffsInfo(HttpConnect connect) {
   connect.close();
 }
 
+void deleteStaffsInfo(HttpConnect connect) {
+  String uri = decodeUriComponent(connect.request.uri.toString());
+  String staff_ids = UriParamParser.getStaff_ids(uri);
+  
+  deleteStaffsFromXML(staff_ids, 'web/webapp/data.xml');
+  
+  connect.response
+    ..headers.contentType = contentTypes["text"]
+    ..write(staff_ids);
+  connect.close();
+}
+
 void main() {
   new StreamServer(uriMapping: _mapping).start();
   // load XML which contains staffs information
   loadXML('web/webapp/data.xml');
+
 }
 
 String searchStaffsFromXML(int start, int count, String keyword) {
-  XmlElement xmlDoc = XML.parse( xmlcontents.join(' ') );	
-  Map allStaffs = xmlDoc.queryAll("staff").asMap();
+  Map allStaffs = xmlDoc.queryAll({'deleted':'false'}).asMap();
   
   int end;
   // if count is 0, get all staff records
   if( count == 0 ) end = allStaffs.length;
   // Parse XML into JSON map 
-  Map data = {};
+  Map data = {};  
   for(var i = start;i < end; i++) {
     Map attributes = {};
     bool isFound = false;
@@ -58,16 +72,22 @@ String searchStaffsFromXML(int start, int count, String keyword) {
       String tag = allStaffs[i].children[j].name;
       attributes[tag] = text;      
     }
-    if( isFound ) data[i.toString()] = attributes;
+    if( !allStaffs[i].attributes.isEmpty && isFound ) 
+    	data[allStaffs[i].attributes['id']] = attributes;
+
     isFound = false;
   }
+  
+  data['total'] = data.length;
+  data['search'] = true;
+  
   return Json.stringify(data);
 }
 
 String getStaffsFromXML(int start, int count) {
-   // get all staff nodes from XML
-   XmlElement xmlDoc = XML.parse( xmlcontents.join(' ') );	
-   Map allNodes = xmlDoc.queryAll("staff").asMap();
+   // get all staff nodes from XML	
+   Map allNodes = xmlDoc.queryAll({'deleted':'false'}).asMap();
+
 
    // staff start index can not be more than the number of staffs in XML
    if( start >= allNodes.length) 
@@ -86,7 +106,8 @@ String getStaffsFromXML(int start, int count) {
        String text =allNodes[i].children[j].text;
        map[tag] = text;
       }
-      data[i.toString()] = map; 
+      if( !allNodes[i].attributes.isEmpty )
+     	 data[allNodes[i].attributes['id']] = map; 
     }
   data['total'] = allNodes.length;
   
