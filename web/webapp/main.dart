@@ -13,7 +13,6 @@ part "utility.dart";
 
 // XML contents
 XmlElement xmlDoc;
-String test;
 
 void loadStaffsInfo(HttpConnect connect) {
   String uri = decodeUriComponent(connect.request.uri.toString());
@@ -37,11 +36,26 @@ void deleteStaffsInfo(HttpConnect connect) {
   String uri = decodeUriComponent(connect.request.uri.toString());
   String staff_ids = UriParamParser.getStaff_ids(uri);
   
-  deleteStaffsFromXML(staff_ids, 'web/webapp/data.xml');
+   String jsonResponse = deleteStaffsFromXML(staff_ids, 'web/webapp/data.xml');
   
   connect.response
-    ..headers.contentType = contentTypes["text"]
-    ..write(staff_ids);
+    ..headers.contentType = contentTypes["json"]
+    ..write(jsonResponse);
+  connect.close();
+}
+
+void recoverStaffsInfo(HttpConnect connect) {
+  String uri = decodeUriComponent(connect.request.uri.toString());
+  int start = UriParamParser.getStart(uri);
+  int count = UriParamParser.getCount(uri);
+  
+  recoverStaffsFromXML("web/webapp/data.xml");
+  
+  String jsonResponse = getStaffsFromXML(start, count);
+  
+   connect.response
+    ..headers.contentType = contentTypes["json"]
+    ..write(jsonResponse);
   connect.close();
 }
 
@@ -49,7 +63,6 @@ void main() {
   new StreamServer(uriMapping: _mapping).start();
   // load XML which contains staffs information
   loadXML('web/webapp/data.xml');
-
 }
 
 String searchStaffsFromXML(int start, int count, String keyword) {
@@ -88,7 +101,6 @@ String getStaffsFromXML(int start, int count) {
    // get all staff nodes from XML	
    Map allNodes = xmlDoc.queryAll({'deleted':'false'}).asMap();
 
-
    // staff start index can not be more than the number of staffs in XML
    if( start >= allNodes.length) 
      return "Error: can not list staffs from the index specified.";
@@ -114,6 +126,39 @@ String getStaffsFromXML(int start, int count) {
   if( start > 0 ) data['previous'] = true;
   if( end < allNodes.length ) data['next'] = true;
   return Json.stringify(data);
+}
+
+
+// delete staffs data from XML by taking out their id attribute
+// can be recovered later
+String deleteStaffsFromXML(String ids, String filename) {
+   File file = new File(filename);
+   String contents = file.readAsStringSync();
+   RegExp staffPatt;
+   ids.split(',').forEach((id) {
+     String patt = "<staff id='${id}' deleted='false'>";
+     staffPatt = new RegExp(patt, multiLine:true);
+     contents = contents.replaceAll(staffPatt, "<staff id='${id}' deleted='true'>");
+   });
+   file.writeAsStringSync(contents);
+
+   loadXML(filename);
+   
+   Map data = {}; 
+   data['deleted_staff_ids'] = ids;
+   return Json.stringify(data);
+}
+
+// recover staffs records in XML by changing staff "delete" attribute to false
+void recoverStaffsFromXML(String filename) {
+   File file = new File(filename);
+   String contents = file.readAsStringSync();
+   RegExp recoverPatt = new RegExp("deleted='true'", multiLine:true);
+   contents = contents.replaceAll(recoverPatt, "deleted='false'");
+
+   xmlDoc = XML.parse(contents);
+   file.writeAsStringSync(contents);
+   
 }
 
 

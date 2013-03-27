@@ -17,14 +17,16 @@ class AppViewRenderer {
 	renderTable(jsonResponse);
 	// debug info will be removed in production mode
 	renderDebugInfo("json", jsonResponse);
-    renderDebugInfo("client", "start_index = ${controller.localData.start} & count_per_page = ${controller.localData.count}");
+//     renderDebugInfo("client", "start_index = ${controller.localData.start} & count_per_page = ${controller.localData.count}");
+      renderDebugInfo("client", "${controller.localData.toString()}");
+
   }
 
   // render staff records table
   void renderTable(String jsonResponse) {
    TableElement staffTable =  document.query("#staff-table");
    staffTable.innerHtml = "";
-   staffTable.append(new Element.html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th>multiselection to be implemented</th></tr>"));
+   staffTable.append(new Element.html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th><input type='checkbox' id='multiSelectStaffs' /></th></tr>"));
    // parse server response json string to map
    Map staffs = Json.parse(jsonResponse);
 
@@ -37,35 +39,13 @@ class AppViewRenderer {
      }
      sb.write("<td class='id${key}'><input type='checkbox' class='staffCheckBox' value='${key}' /></td></tr>");
      var row = new Element.html(sb.toString());
-     staffTable.append(row);
- 
-      
+     staffTable.append(row);  
    }
-     // toggle line-through when checkbox clicked       
-     document.queryAll(".staffCheckBox").forEach((checkBox){
-     	checkBox.onClick.listen((e) { 
-     		toggleSearchWarning(isShown: false);
-            int staff_id = int.parse(checkBox.parent.classes.toString().substring("id".length, 3));  	
-     		Set<String> staff_ids_set = controller.localData.staff_ids;
-     		if( !checkBox.checked ) {	    
-     			checkBox.parent.classes.remove("line-through");
-				staff_ids_set.remove(staff_id.toString());			
-     		} 
-     		else {
-     		    staff_ids_set.add(staff_id.toString());
-     		}
-     		String rowClass = checkBox.parent.classes.toString();
-     		document.queryAll(".${rowClass}").forEach((td){
-     			if( !checkBox.checked )
-     				td.classes.remove("line-through");
-     			else {
-     				td.classes.add("line-through");
-     			}
-     		});    	
-     			
-     	});
-     }); 
-                          
+   
+   toggleStaffSelection();
+   
+   toggleStaffsMultiSelection();
+                           
    if( staffs.containsKey("total") ) {
      controller.localData.total = staffs["total"];
      updatePagination(controller.localData.total);
@@ -120,7 +100,66 @@ class AppViewRenderer {
 	previousBtn.disabled = hasPrevious ? false : true;
 	nextBtn.disabled = hasNext ? false : true; 
   }
+  
+  // toggle line-through when checkbox clicked
+  void toggleStaffSelection() {       
+     document.queryAll(".staffCheckBox").forEach((checkBox){
+     	checkBox.onClick.listen((e) { 
+     		toggleSearchWarning(isShown: false);
+            int staff_id = int.parse(checkBox.parent.classes.toString().substring("id".length, 3));  	
+     		Set<String> staff_ids_set = controller.localData.staff_ids;
+     		if( !checkBox.checked ) {	    
+     			checkBox.parent.classes.remove("line-through");
+				staff_ids_set.remove(staff_id.toString());			
+     		} 
+     		else {
+     		    staff_ids_set.add(staff_id.toString());
+     		}
+     		String rowClass = checkBox.parent.classes.toString();
+     		document.queryAll(".${rowClass}").forEach((td){
+     			if( !checkBox.checked )
+     				td.classes.remove("line-through");
+     			else {
+     				td.classes.add("line-through");
+     			}
+     		});    	
+     			
+     	});
+     }); 
+   }
+   
+  // toggle line-through when multi-checkbox clicked 
+  void toggleStaffsMultiSelection() {
+    CheckboxInputElement multiSelectCbx = document.query("#multiSelectStaffs");
+   multiSelectCbx.onClick.listen((e) {
+     toggleSearchWarning(isShown: false);
+     controller.localData.staff_ids = new Set<String>();
+     Set<String> staff_ids_set = controller.localData.staff_ids;	
+ 
+   	 document.queryAll(".staffCheckBox").forEach((checkBox){		 		
+     		if( !multiSelectCbx.checked ) {	    
+     			checkBox.parent.classes.remove("line-through");		
+     		} 
+     		else {
+     		    int staff_id = int.parse(checkBox.parent.classes.toString().substring("id".length, 3));  	
+     		    staff_ids_set.add(staff_id.toString());
+     		}
+     		String rowClass = checkBox.parent.classes.toString();
 
+     		document.queryAll(".${rowClass}").forEach((td){   	        		   
+     			if( !multiSelectCbx.checked ) {
+     				checkBox.checked = false;
+     				td.classes.remove("line-through");
+     			}
+     			else {
+     			    checkBox.checked = true;
+     				td.classes.add("line-through");
+     			}
+     		});    	     		
+     }); 
+   });
+  } 
+  
   // toggle search warning message
   void toggleSearchWarning({bool isShown: false , String message: null}) {
     if( document.query(".warning") != null) {

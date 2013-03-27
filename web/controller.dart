@@ -21,6 +21,15 @@ class LocalData {
   set total(int total) => this._total = total; 
   set staff_ids(Set<String> staff_ids) => this._staff_ids = staff_ids;
   
+  String toString() {
+  	String all = '''
+  		start_index = ${start} 
+  		& count_per_page = ${count}
+  		& total = ${total}
+  		''';
+  	return all;
+  }
+  
 }
 
 // application controller
@@ -48,6 +57,7 @@ class AppController {
     ButtonElement searchBtn = document.query("#search");
     InputElement searchBox = document.query("#searchBox");
     ButtonElement deleteBtn = document.query("#delete");
+    ButtonElement recoverBtn = document.query("#recover");
    
     // attach event to relevent DOM objects
     // read staffs information from server when triggered
@@ -59,6 +69,7 @@ class AppController {
     attachEventLoadStaffs(searchBox, "onKeyPress");
     
     attachEventDeleteStaffs(deleteBtn, "onClick"); 
+    attachEventRecoverStaffs(recoverBtn, "onClick"); 
     
     // attach event to relevent DOM objects
     // register local events
@@ -191,7 +202,7 @@ class AppController {
   
   }
   
-  // attatch ajax events of delete staffs to DOM objects
+  // attatch ajax events of deleting staffs to DOM objects
   void attachEventDeleteStaffs(EventTarget element, String eventType) {
 
     switch(eventType) {
@@ -206,6 +217,29 @@ class AppController {
               (request) {                
                  _view.deleteRows(localData.staff_ids);
                  localData.staff_ids = new Set<String>();
+                 _view.renderDebugInfo("json", request.responseText);
+               });
+            }); 
+          break;
+          
+    } // switch
+  }
+  
+  // attatch ajax events of recovering deleted staffs to DOM objects
+  void attachEventRecoverStaffs(EventTarget element, String eventType) {
+	SelectElement numPerPage = document.query("#number-per-page"); 
+    
+    switch(eventType) {
+      case "onClick":    
+    		element.onClick.listen((e) {
+    		 localData.start = 0;
+       	     localData.count = int.parse(numPerPage.value);
+           	 String uri = "/recoverStaffsInfo?start=${localData.start}&count=${localData.count}";
+			 
+           	 HttpRequest.request(uri).then(
+              (request) {                
+					_view.updateView(request.responseText);
+					_view.toggleSearchWarning(isShown: true, message: "Original staffs data has been recovered.");
                });
             }); 
           break;

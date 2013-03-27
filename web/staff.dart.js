@@ -4139,6 +4139,9 @@ $$.LocalData = {"": "Object;_liblib6$_start,_count,_total,_staff_ids",
   set$staff_ids: function(staff_ids) {
     this._staff_ids = staff_ids;
     return staff_ids;
+  },
+  toString$0: function(_) {
+    return "  \t\tstart_index = " + $.S(this.get$start()) + " \n  \t\t& count_per_page = " + $.S(this.get$count()) + "\n  \t\t& total = " + $.S(this.get$total()) + "\n  \t\t";
   }
 };
 
@@ -4147,7 +4150,7 @@ $$.AppController = {"": "Object;_localData,_view>",
     return this._localData;
   },
   setup_ui$0: function() {
-    var displayAllBtn, previousBtn, nextBtn, numPerPage, searchBtn, searchBox, deleteBtn;
+    var displayAllBtn, previousBtn, nextBtn, numPerPage, searchBtn, searchBox, deleteBtn, recoverBtn;
     displayAllBtn = document.query$1("#displayAll");
     previousBtn = document.query$1("#previous");
     nextBtn = document.query$1("#next");
@@ -4155,6 +4158,7 @@ $$.AppController = {"": "Object;_localData,_view>",
     searchBtn = document.query$1("#search");
     searchBox = document.query$1("#searchBox");
     deleteBtn = document.query$1("#delete");
+    recoverBtn = document.query$1("#recover");
     this.attachEventLoadStaffs$2(displayAllBtn, "onClick");
     this.attachEventLoadStaffs$2(previousBtn, "onClick");
     this.attachEventLoadStaffs$2(nextBtn, "onClick");
@@ -4162,6 +4166,7 @@ $$.AppController = {"": "Object;_localData,_view>",
     this.attachEventLoadStaffs$2(searchBtn, "onClick");
     this.attachEventLoadStaffs$2(searchBox, "onKeyPress");
     this.attachEventDeleteStaffs$2(deleteBtn, "onClick");
+    this.attachEventRecoverStaffs$2(recoverBtn, "onClick");
     this.attachEventsClientSide$0();
   },
   load_initial_data$0: function() {
@@ -4197,6 +4202,14 @@ $$.AppController = {"": "Object;_localData,_view>",
         break;
     }
   },
+  attachEventRecoverStaffs$2: function(element, eventType) {
+    var numPerPage = document.query$1("#number-per-page");
+    switch (eventType) {
+      case "onClick":
+        element.get$onClick().listen$1(new $.AppController_attachEventRecoverStaffs_anon(this, numPerPage));
+        break;
+    }
+  },
   AppController$0: function() {
     this._localData = $.LocalData$(0, 0, 0);
     this._view = $.AppViewRenderer$(this);
@@ -4210,20 +4223,20 @@ $$.AppViewRenderer = {"": "Object;_controller",
   updateView$1: function(jsonResponse) {
     this.renderTable$1(jsonResponse);
     this.renderDebugInfo$2("json", jsonResponse);
-    this.renderDebugInfo$2("client", "start_index = " + $.S(this.get$controller().get$localData().get$start()) + " & count_per_page = " + $.S(this.get$controller().get$localData().get$count()));
+    this.renderDebugInfo$2("client", $.S($.toString$0$abfnosu(this.get$controller().get$localData())));
   },
   renderTable$1: function(jsonResponse) {
     var staffTable, staffs, t1, t2, t3, staff, sb, t4, t5, t6;
     staffTable = document.query$1("#staff-table");
     staffTable.set$innerHtml("");
-    staffTable.append$1($._ElementFactoryProvider_createElement_html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th>multiselection to be implemented</th></tr>"));
+    staffTable.append$1($._ElementFactoryProvider_createElement_html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th><input type='checkbox' id='multiSelectStaffs' /></th></tr>"));
     staffs = $.parse(jsonResponse, null);
     if (typeof staffs !== "string" && (typeof staffs !== "object" || staffs === null || staffs.constructor !== Array && !staffs.$isJavaScriptIndexingBehavior()))
-      return this.renderTable$1$bailout(1, staffs, staffTable);
+      return this.renderTable$1$bailout(1, staffTable, staffs);
     for (t1 = $.get$iterator$a(staffs.get$keys()), t2 = $.getInterceptor$as(staffs); t1.moveNext$0() === true;) {
       t3 = t1.get$current();
       if (typeof t3 !== "string")
-        return this.renderTable$1$bailout(2, staffs, staffTable, t1, t3, t2);
+        return this.renderTable$1$bailout(2, staffTable, staffs, t3, t1, t2);
       if (t3 === "total" || t3 === "next" || t3 === "previous")
         break;
       if (t3 !== (t3 | 0))
@@ -4232,7 +4245,7 @@ $$.AppViewRenderer = {"": "Object;_controller",
         throw $.ioore(t3);
       staff = staffs[t3];
       if (typeof staff !== "string" && (typeof staff !== "object" || staff === null || staff.constructor !== Array && !staff.$isJavaScriptIndexingBehavior()))
-        return this.renderTable$1$bailout(3, staffs, staffTable, t1, t3, t2, staff);
+        return this.renderTable$1$bailout(3, staffTable, staffs, t3, t1, t2, staff);
       sb = $.StringBuffer$("<tr>");
       for (t4 = $.get$iterator$a(staff.get$keys()); t4.moveNext$0() === true;) {
         t5 = t4.get$current();
@@ -4246,8 +4259,8 @@ $$.AppViewRenderer = {"": "Object;_controller",
       sb.write$1("<td class='id" + $.S(t3) + "'><input type='checkbox' class='staffCheckBox' value='" + $.S(t3) + "' /></td></tr>");
       staffTable.append$1($._ElementFactoryProvider_createElement_html(sb.toString$0(sb)));
     }
-    t1 = document.queryAll$1(".staffCheckBox");
-    t1.forEach$1(t1, new $.AppViewRenderer_renderTable_anon(this));
+    this.toggleStaffSelection$0();
+    this.toggleStaffsMultiSelection$0();
     if (staffs.containsKey$1("total") === true) {
       throw $.iae("total");
       if ("total" < 0 || "total" >= staffs.length)
@@ -4269,12 +4282,12 @@ $$.AppViewRenderer = {"": "Object;_controller",
     }
     this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
   },
-  renderTable$1$bailout: function(state0, staffs, staffTable, t1, t3, t2, staff) {
+  renderTable$1$bailout: function(state0, staffTable, staffs, t3, t1, t2, staff) {
     switch (state0) {
       case 0:
         staffTable = document.query$1("#staff-table");
         staffTable.set$innerHtml("");
-        staffTable.append$1($._ElementFactoryProvider_createElement_html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th>multiselection to be implemented</th></tr>"));
+        staffTable.append$1($._ElementFactoryProvider_createElement_html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th><input type='checkbox' id='multiSelectStaffs' /></th></tr>"));
         staffs = $.parse(jsonResponse, null);
       case 1:
         state0 = 0;
@@ -4305,8 +4318,8 @@ $$.AppViewRenderer = {"": "Object;_controller",
                 sb.write$1("<td class='id" + $.S(t3) + "'><input type='checkbox' class='staffCheckBox' value='" + $.S(t3) + "' /></td></tr>");
                 staffTable.append$1($._ElementFactoryProvider_createElement_html(sb.toString$0(sb)));
             }
-        t1 = document.queryAll$1(".staffCheckBox");
-        t1.forEach$1(t1, new $.AppViewRenderer_renderTable_anon(this));
+        this.toggleStaffSelection$0();
+        this.toggleStaffsMultiSelection$0();
         if (staffs.containsKey$1("total") === true) {
           t1 = t2.$index(staffs, "total");
           this.get$controller().get$localData().set$total(t1);
@@ -4360,6 +4373,14 @@ $$.AppViewRenderer = {"": "Object;_controller",
     nextBtn = document.query$1("#next");
     previousBtn.set$disabled(hasPrevious !== true || false);
     nextBtn.set$disabled(hasNext !== true || false);
+  },
+  toggleStaffSelection$0: function() {
+    var t1 = document.queryAll$1(".staffCheckBox");
+    t1.forEach$1(t1, new $.AppViewRenderer_toggleStaffSelection_anon(this));
+  },
+  toggleStaffsMultiSelection$0: function() {
+    var multiSelectCbx = document.query$1("#multiSelectStaffs");
+    multiSelectCbx.get$onClick().listen$1(new $.AppViewRenderer_toggleStaffsMultiSelection_anon(this, multiSelectCbx));
   },
   toggleSearchWarning$2$isShown$message: function(isShown, message) {
     if (document.query$1(".warning") != null)
@@ -5369,6 +5390,12 @@ $$._ListRangeIteratorImpl = {"": "Object;_liblib2$_source,_offset,_end",
   }
 };
 
+$$.ConstantMap_values_anon = {"": "Closure;this_0",
+  call$1: function(key) {
+    return $.$$index$as(this.this_0, key);
+  }
+};
+
 $$.CssClassSet_addAll_anon = {"": "Closure;iterable_0",
   call$1: function(s) {
     return $.addAll$1$a(s, this.iterable_0);
@@ -5378,12 +5405,6 @@ $$.CssClassSet_addAll_anon = {"": "Closure;iterable_0",
 $$.CssClassSet_add_anon = {"": "Closure;value_0",
   call$1: function(s) {
     return $.add$1$a(s, this.value_0);
-  }
-};
-
-$$.ConstantMap_values_anon = {"": "Closure;this_0",
-  call$1: function(key) {
-    return $.$$index$as(this.this_0, key);
   }
 };
 
@@ -5399,12 +5420,6 @@ $$.ConstantMap_forEach_anon = {"": "Closure;this_0,f_1",
   }
 };
 
-$$._ElementFactoryProvider__getColgroup_anon = {"": "Closure;",
-  call$1: function(n) {
-    return $.$$eq$o(n.get$tagName(), "COLGROUP");
-  }
-};
-
 $$._EventLoop__runHelper_next = {"": "Closure;this_0",
   call$0: function() {
     if (!this.this_0.runIteration$0())
@@ -5413,37 +5428,15 @@ $$._EventLoop__runHelper_next = {"": "Closure;this_0",
   }
 };
 
+$$._ElementFactoryProvider__getColgroup_anon = {"": "Closure;",
+  call$1: function(n) {
+    return $.$$eq$o(n.get$tagName(), "COLGROUP");
+  }
+};
+
 $$._waitForPendingPorts_anon = {"": "Closure;callback_0",
   call$1: function(_) {
     return this.callback_0.call$0();
-  }
-};
-
-$$.LinkedHashMap_addAll_anon = {"": "Closure;this_0",
-  call$2: function(key, value) {
-    var t1, offset;
-    t1 = this.this_0;
-    offset = t1.get$_hashTable()._put$1(key);
-    t1.get$_hashTable()._liblib0$_setValue$2(offset, value);
-    t1.get$_hashTable()._checkCapacity$0();
-  }
-};
-
-$$.Stream_toList_anon = {"": "Closure;result_0",
-  call$1: function(data) {
-    $.add$1$a(this.result_0, data);
-  }
-};
-
-$$.Stream_toList_anon0 = {"": "Closure;result_1,future_2",
-  call$0: function() {
-    this.future_2._setValue$1(this.result_1);
-  }
-};
-
-$$._FutureImpl__handleValue_anon = {"": "Closure;thenFuture_0,value_1",
-  call$0: function() {
-    this.thenFuture_0._sendValue$1(this.value_1);
   }
 };
 
@@ -5487,6 +5480,34 @@ $$.HashMap_addAll_anon = {"": "Closure;this_0",
   }
 };
 
+$$.LinkedHashMap_addAll_anon = {"": "Closure;this_0",
+  call$2: function(key, value) {
+    var t1, offset;
+    t1 = this.this_0;
+    offset = t1.get$_hashTable()._put$1(key);
+    t1.get$_hashTable()._liblib0$_setValue$2(offset, value);
+    t1.get$_hashTable()._checkCapacity$0();
+  }
+};
+
+$$.Stream_toList_anon = {"": "Closure;result_0",
+  call$1: function(data) {
+    $.add$1$a(this.result_0, data);
+  }
+};
+
+$$.Stream_toList_anon0 = {"": "Closure;result_1,future_2",
+  call$0: function() {
+    this.future_2._setValue$1(this.result_1);
+  }
+};
+
+$$._FutureImpl__handleValue_anon = {"": "Closure;thenFuture_0,value_1",
+  call$0: function() {
+    this.thenFuture_0._sendValue$1(this.value_1);
+  }
+};
+
 $$._PendingSendPortFinder_visitList_anon = {"": "Closure;this_0",
   call$1: function(e) {
     return this.this_0._dispatch$1(e);
@@ -5518,18 +5539,6 @@ $$._FutureImpl__handleError_anon = {"": "Closure;error_0,errorFuture_1",
   }
 };
 
-$$._BaseSendPort_call_anon = {"": "Closure;completer_0,port_1",
-  call$2: function(value, ignoreReplyTo) {
-    var t1;
-    this.port_1.close$0();
-    t1 = this.completer_0;
-    if (typeof value === "object" && value !== null && !!value.$isException)
-      t1.completeError$1(value);
-    else
-      t1.complete$1(value);
-  }
-};
-
 $$.invokeClosure_anon = {"": "Closure;closure_0",
   call$0: function() {
     return this.closure_0.call$0();
@@ -5545,6 +5554,18 @@ $$.invokeClosure_anon0 = {"": "Closure;closure_1,arg1_2",
 $$.invokeClosure_anon1 = {"": "Closure;closure_3,arg1_4,arg2_5",
   call$0: function() {
     return this.closure_3.call$2(this.arg1_4, this.arg2_5);
+  }
+};
+
+$$._BaseSendPort_call_anon = {"": "Closure;completer_0,port_1",
+  call$2: function(value, ignoreReplyTo) {
+    var t1;
+    this.port_1.close$0();
+    t1 = this.completer_0;
+    if (typeof value === "object" && value !== null && !!value.$isException)
+      t1.completeError$1(value);
+    else
+      t1.complete$1(value);
   }
 };
 
@@ -5573,6 +5594,19 @@ $$._Copier_visitMap_anon = {"": "Closure;box_0,this_1",
   }
 };
 
+$$.AppViewRenderer_deleteRows_anon = {"": "Closure;",
+  call$1: function(id) {
+    var t1 = document.queryAll$1(".id" + $.S(id));
+    t1.forEach$1(t1, new $.AppViewRenderer_deleteRows__anon());
+  }
+};
+
+$$.AppViewRenderer_deleteRows__anon = {"": "Closure;",
+  call$1: function(td) {
+    $.remove$0$a(td);
+  }
+};
+
 $$._WorkerSendPort_send_anon = {"": "Closure;this_0,message_1,replyTo_2",
   call$0: function() {
     var t1, t2, workerMessage, manager;
@@ -5587,19 +5621,6 @@ $$._WorkerSendPort_send_anon = {"": "Closure;this_0,message_1,replyTo_2",
       if (manager != null)
         manager.postMessage$1(workerMessage);
     }
-  }
-};
-
-$$.AppViewRenderer_deleteRows_anon = {"": "Closure;",
-  call$1: function(id) {
-    var t1 = document.queryAll$1(".id" + $.S(id));
-    t1.forEach$1(t1, new $.AppViewRenderer_deleteRows__anon());
-  }
-};
-
-$$.AppViewRenderer_deleteRows__anon = {"": "Closure;",
-  call$1: function(td) {
-    $.remove$0$a(td);
   }
 };
 
@@ -5636,6 +5657,25 @@ $$.Stream_elementAt_anon0 = {"": "Closure;future_2",
   }
 };
 
+$$.AppController_attachEventRecoverStaffs_anon = {"": "Closure;this_0,numPerPage_1",
+  call$1: function(e) {
+    var t1, t2;
+    t1 = this.this_0;
+    t1.get$localData().set$start(0);
+    t2 = $.int_parse(this.numPerPage_1.get$value(), null, null);
+    t1.get$localData().set$count(t2);
+    $.HttpRequest_request("/recoverStaffsInfo?start=" + $.S(t1.get$localData().get$start()) + "&count=" + $.S(t1.get$localData().get$count()), null, null, null, null, null).then$1(new $.AppController_attachEventRecoverStaffs__anon(t1));
+  }
+};
+
+$$.AppController_attachEventRecoverStaffs__anon = {"": "Closure;this_2",
+  call$1: function(request) {
+    var t1 = this.this_2;
+    t1.get$_view().updateView$1(request.get$responseText());
+    t1.get$_view().toggleSearchWarning$2$isShown$message(true, "Original staffs data has been recovered.");
+  }
+};
+
 $$.AppController_attachEventDeleteStaffs_anon = {"": "Closure;this_0",
   call$1: function(e) {
     var t1 = this.this_0;
@@ -5652,6 +5692,7 @@ $$.AppController_attachEventDeleteStaffs__anon = {"": "Closure;this_1",
     t1.get$_view().deleteRows$1(t1.get$localData().get$staff_ids());
     t2 = $.HashSet$();
     t1.get$localData().set$staff_ids(t2);
+    t1.get$_view().renderDebugInfo$2("json", request.get$responseText());
   }
 };
 
@@ -5763,6 +5804,42 @@ $$._FutureImpl__FutureImpl$wait_anon = {"": "Closure;box_0,pos_1",
   }
 };
 
+$$.AppViewRenderer_toggleStaffSelection_anon = {"": "Closure;this_0",
+  call$1: function(checkBox) {
+    checkBox.get$onClick().listen$1(new $.AppViewRenderer_toggleStaffSelection__anon(this.this_0, checkBox));
+  }
+};
+
+$$.AppViewRenderer_toggleStaffSelection__anon = {"": "Closure;this_1,checkBox_2",
+  call$1: function(e) {
+    var t1, t2, staff_id, staff_ids_set, t3, rowClass;
+    t1 = this.this_1;
+    t1.toggleSearchWarning$1$isShown(false);
+    t2 = this.checkBox_2;
+    staff_id = $.int_parse($.substring$2$s($.toString$0$abfnosu(t2.get$parent().get$classes()), 2, 3), null, null);
+    staff_ids_set = t1.get$controller().get$localData().get$staff_ids();
+    t1 = $.getInterceptor$a(staff_ids_set);
+    t3 = $.getInterceptor(staff_id);
+    if (t2.get$checked() !== true) {
+      $.remove$1$a(t2.get$parent().get$classes(), "line-through");
+      t1.remove$1(staff_ids_set, t3.toString$0(staff_id));
+    } else
+      t1.add$1(staff_ids_set, t3.toString$0(staff_id));
+    rowClass = $.toString$0$abfnosu(t2.get$parent().get$classes());
+    t1 = document.queryAll$1("." + $.S(rowClass));
+    t1.forEach$1(t1, new $.AppViewRenderer_toggleStaffSelection___anon(t2));
+  }
+};
+
+$$.AppViewRenderer_toggleStaffSelection___anon = {"": "Closure;checkBox_3",
+  call$1: function(td) {
+    if (this.checkBox_3.get$checked() !== true)
+      $.remove$1$a(td.get$classes(), "line-through");
+    else
+      $.add$1$a(td.get$classes(), "line-through");
+  }
+};
+
 $$._NativeJsSendPort_send_anon = {"": "Closure;this_1,message_2,replyTo_3",
   call$0: function() {
     var t1, t2, t3, isolate, shouldSerialize, msg;
@@ -5800,6 +5877,50 @@ $$._NativeJsSendPort_send__anon = {"": "Closure;box_0,this_4,shouldSerialize_5",
       t1 = t1.get$_receivePort();
       t2 = this.box_0;
       t1._callback$2(t2.msg_0, t2.reply_1);
+    }
+  }
+};
+
+$$.AppViewRenderer_toggleStaffsMultiSelection_anon = {"": "Closure;this_0,multiSelectCbx_1",
+  call$1: function(e) {
+    var t1, t2, staff_ids_set;
+    t1 = this.this_0;
+    t1.toggleSearchWarning$1$isShown(false);
+    t2 = $.HashSet$();
+    t1.get$controller().get$localData().set$staff_ids(t2);
+    staff_ids_set = t1.get$controller().get$localData().get$staff_ids();
+    t2 = document.queryAll$1(".staffCheckBox");
+    t2.forEach$1(t2, new $.AppViewRenderer_toggleStaffsMultiSelection__anon(this.multiSelectCbx_1, staff_ids_set));
+  }
+};
+
+$$.AppViewRenderer_toggleStaffsMultiSelection__anon = {"": "Closure;multiSelectCbx_2,staff_ids_set_3",
+  call$1: function(checkBox) {
+    var t1, staff_id, rowClass, t2;
+    t1 = this.multiSelectCbx_2;
+    if (t1.get$checked() !== true)
+      $.remove$1$a(checkBox.get$parent().get$classes(), "line-through");
+    else {
+      staff_id = $.int_parse($.substring$2$s($.toString$0$abfnosu(checkBox.get$parent().get$classes()), 2, 3), null, null);
+      $.add$1$a(this.staff_ids_set_3, $.toString$0$abfnosu(staff_id));
+    }
+    rowClass = $.toString$0$abfnosu(checkBox.get$parent().get$classes());
+    t2 = document.queryAll$1("." + $.S(rowClass));
+    t2.forEach$1(t2, new $.AppViewRenderer_toggleStaffsMultiSelection___anon(t1, checkBox));
+  }
+};
+
+$$.AppViewRenderer_toggleStaffsMultiSelection___anon = {"": "Closure;multiSelectCbx_4,checkBox_5",
+  call$1: function(td) {
+    var t1, t2;
+    t1 = this.multiSelectCbx_4.get$checked();
+    t2 = this.checkBox_5;
+    if (t1 !== true) {
+      t2.set$checked(false);
+      $.remove$1$a(td.get$classes(), "line-through");
+    } else {
+      t2.set$checked(true);
+      $.add$1$a(td.get$classes(), "line-through");
     }
   }
 };
@@ -5896,42 +6017,6 @@ $$.NoSuchMethodError_toString_anon = {"": "Closure;box_0",
     $.add$1$a(t1.sb_0, ": ");
     $.add$1$a(t1.sb_0, $.Error_safeToString(value));
     t1.i_1 = $.$$add$n(t1.i_1, 1);
-  }
-};
-
-$$.AppViewRenderer_renderTable_anon = {"": "Closure;this_0",
-  call$1: function(checkBox) {
-    checkBox.get$onClick().listen$1(new $.AppViewRenderer_renderTable__anon(this.this_0, checkBox));
-  }
-};
-
-$$.AppViewRenderer_renderTable__anon = {"": "Closure;this_1,checkBox_2",
-  call$1: function(e) {
-    var t1, t2, staff_id, staff_ids_set, t3, rowClass;
-    t1 = this.this_1;
-    t1.toggleSearchWarning$1$isShown(false);
-    t2 = this.checkBox_2;
-    staff_id = $.int_parse($.substring$2$s($.toString$0$abfnosu(t2.get$parent().get$classes()), 2, 3), null, null);
-    staff_ids_set = t1.get$controller().get$localData().get$staff_ids();
-    t1 = $.getInterceptor$a(staff_ids_set);
-    t3 = $.getInterceptor(staff_id);
-    if (t2.get$checked() !== true) {
-      $.remove$1$a(t2.get$parent().get$classes(), "line-through");
-      t1.remove$1(staff_ids_set, t3.toString$0(staff_id));
-    } else
-      t1.add$1(staff_ids_set, t3.toString$0(staff_id));
-    rowClass = $.toString$0$abfnosu(t2.get$parent().get$classes());
-    t1 = document.queryAll$1("." + $.S(rowClass));
-    t1.forEach$1(t1, new $.AppViewRenderer_renderTable___anon(t2));
-  }
-};
-
-$$.AppViewRenderer_renderTable___anon = {"": "Closure;checkBox_3",
-  call$1: function(td) {
-    if (this.checkBox_3.get$checked() !== true)
-      $.remove$1$a(td.get$classes(), "line-through");
-    else
-      $.add$1$a(td.get$classes(), "line-through");
   }
 };
 
@@ -8707,7 +8792,7 @@ $.$defineNativeClass("HTMLImageElement", {
   }
 });
 
-$.$defineNativeClass("HTMLInputElement", {"": "checked>,disabled<,pattern>,value=",
+$.$defineNativeClass("HTMLInputElement", {"": "checked=,disabled<,pattern>,value=",
   $isElement: function() {
     return true;
   },

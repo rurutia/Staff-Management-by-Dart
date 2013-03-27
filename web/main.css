@@ -98,7 +98,7 @@ section {
 }
 #staff-table td {
   padding:5px;
-  width:170px;
+  width:160px;
   border:1px solid black;
   font-size: 16px;
   text-align: center;
@@ -111,13 +111,13 @@ section {
   font-weight:bold;
  }
 /* record command section */
-#command-container {
+#search-container {
   margin: 0 auto;
-  padding: 10px 0 30px 0;
-  width: 680px; 
+  width: 900px;
 }
-#delete {
+#delete, #recover {
   float: right;
+  padding-left:10px;
   background-color: #eb66c8;
   color: #fff;
 }

@@ -15,22 +15,6 @@ void loadXML(String filename) {
   });	
 }
 
-// delete staffs data from XML by taking out their id attribute
-// can be recovered later
-void deleteStaffsFromXML(String ids, String filename) {
-   File file = new File(filename);
-   String contents = file.readAsStringSync();
-   RegExp staffPatt;
-   ids.split(',').forEach((id) {
-     String patt = "<staff id='${id}' deleted='false'>";
-     staffPatt = new RegExp(patt, multiLine:true);
-     contents = contents.replaceAll(staffPatt, "<staff id='${id}' deleted='true'>");
-   });
-   file.writeAsStringSync(contents);
-
-   loadXML(filename);
-}
-
 // Parse request uri to extract parameter values
 class UriParamParser {
   static final RegExp startPatt = new RegExp(r"start=\d+");
