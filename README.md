@@ -1,4 +1,5 @@
 <h3>Development Log</h3> 
+<br>#27/03 Issues in Dartium checked mode fixed
 <br>#26/03 Code improved to adopt clearer MVC pattern on client side
 <br>#25/03 Deletion implemented
 <br>#23/03 Pagination implemented

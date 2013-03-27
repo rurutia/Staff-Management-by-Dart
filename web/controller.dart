@@ -77,7 +77,7 @@ class AppController {
       _view.toggleSearchWarning(isShown: false);
     });
     
-    InputElement clearDebugBtn = document.query("#clearDebugBtn");
+    ButtonElement clearDebugBtn = document.query("#clearDebugBtn");
     clearDebugBtn.onClick.listen((e) {
       document.queryAll(".debug-info").forEach((element) {
       	element.innerHtml = ''; 
