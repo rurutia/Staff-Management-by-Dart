@@ -1,6 +1,6 @@
 <h3>Development Log</h3> 
 <br>#27/03 Issues in Dartium checked mode fixed. Multi-selection and data recovery have been added.
-<br>#26/03 Code improved to adopt clearer MVC pattern on client side
+<br>#26/03 Codes improved to adopt clearer MVC pattern on client side
 <br>#25/03 Deletion implemented
 <br>#23/03 Pagination implemented
 <br>#22/03 Ajax/Json data transfer implemented
