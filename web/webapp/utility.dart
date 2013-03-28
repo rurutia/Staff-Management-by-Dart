@@ -1,20 +1,6 @@
 // Utility classes and functions
 part of staff_management;
 
-// Load XML data 
-void loadXML(String filename) {
-  List<String> xmlcontents = [];
-  File file = new File(filename);
-  file.readAsString().then((content) {
-		xmlcontents.add(content);
-		var completer = new Completer();
-        completer.complete(xmlcontents);
-        return completer.future;
-  }).then((contents) {
-        xmlDoc = XML.parse( xmlcontents.join(' ') );
-  });	
-}
-
 // Parse request uri to extract parameter values
 class UriParamParser {
   static final RegExp startPatt = new RegExp(r"start=\d+");
