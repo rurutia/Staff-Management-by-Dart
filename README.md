@@ -24,7 +24,7 @@ Plan to transit to MongoDB by implementing Database Dao.
 <br>----<b>index.html</b>    (client web interface) 
 <br>----<b>main.css</b>      (style sheet)
 <br>----<b>webapp</b>      (server side codes)
-<br>------<b>main.dart</b>     (server management, taking client request and sending response back)
+<br>------<b>main.dart</b>     (server management, handling client request and sending response back)
 <br>------<b>dao.dart</b>    (data access interface and concrete implementations responsible for business logic and data operation)
 <br>------<b>config.dart</b>    (uri mapping configuration)
 <br>------<b>utility.dart</b>    (unility classes and functions)
