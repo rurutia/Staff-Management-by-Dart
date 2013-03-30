@@ -1,6 +1,6 @@
 <h3>Development Log</h3> 
 <br>#30/03 Add functionality implemented
-<br>#28/03 Rewrite server side codes to program data operation to Data Access Object interface. 
+<br>#28/03 Rewrite server side codes to programme data operation to Data Access Object interface. 
 Seperate business logic and data operation from "main.dart" into "dao.dart" in which XML dao has been implemented.
 Plan to transit to MongoDB by implementing Database Dao. 
 <br>#27/03 Issues in Dartium checked mode fixed. Multi-selection and data recovery have been added.
