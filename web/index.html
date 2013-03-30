@@ -8,15 +8,33 @@
    <section id="content" >
        <h1 id="app-title">Staff Management Application</h1>
        <div id="search-container" >
-           <label for="searchBox">please enter keyword:</label>
+       	   <button id="add">add</button>
+           <label for="searchBox">search keyword:</label>
            <input type="text" id="searchBox" />
            <button id="search">search</button>           
            <button id="recover">recover</button>
            <button id="delete">delete</button>
        </div>
-       <table id="staff-table">
-           <tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th></tr>
-       </table>
+       <div id="table-container">
+		   <table id="staff-table">
+			   <tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th></tr>
+		   </table>
+		   <div id="add-staff-container">
+		        <h3> New Staff Details</h3>
+		      	<table id="new-staff-table">
+		   			<tr><td><label for="staff-no">Employee No:</label></td>
+		   				<td><input type="text" class="staff-input" id="staff-no" placeholder="three digits" /></td></tr>
+		   			<tr><td><label for="staff-name">Name:</label></td>
+		   				<td><input type="text" class="staff-input" id="staff-name" placeholder="letters and spaces" /></td></tr>
+		   			<tr><td><label for="staff-position">Position:</label></td>
+		   				<td><input type="text" class="staff-input" id="staff-position" placeholder="letters and spaces" /></td></tr>
+		   			<tr><td><label for="staff-yearjoin">Year Join:</label></td>
+		   				<td><input type="text" class="staff-input" id="staff-yearjoin" placeholder="four digits" /></td></tr>
+					<tr><td><button id="cancelAddStaff">cancel</button></td>
+						<td><button id="confirmAddStaff">create</button></td></tr>
+				</table>
+		   </div>
+       </div>
        <div id="loadAnimation">
        </div>
     </section>

@@ -7,6 +7,7 @@ import "dart:uri";
 
 part "controller.dart";
 part "view.dart";
+part "validation.dart";
 
 AppController _app;
 AppController get app => _app;

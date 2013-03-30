@@ -58,6 +58,7 @@ class AppController {
     InputElement searchBox = document.query("#searchBox");
     ButtonElement deleteBtn = document.query("#delete");
     ButtonElement recoverBtn = document.query("#recover");
+    ButtonElement confirmAddStaffBtn = document.query("#confirmAddStaff");
    
     // attach event to relevent DOM objects
     // read staffs information from server when triggered
@@ -67,9 +68,11 @@ class AppController {
     attachEventLoadStaffs(numPerPage, "onChange");
     attachEventLoadStaffs(searchBtn, "onClick"); 
     attachEventLoadStaffs(searchBox, "onKeyPress");
-    
+    // Delete and recover staffs from data store 
     attachEventDeleteStaffs(deleteBtn, "onClick"); 
     attachEventRecoverStaffs(recoverBtn, "onClick"); 
+    // Add new staff to data store
+    attachEventAddStaff(confirmAddStaffBtn, "onClick"); 
     
     // attach event to relevent DOM objects
     // register local events
@@ -82,17 +85,18 @@ class AppController {
   }
 
   void attachEventsClientSide() {
+    ButtonElement displayAddStaffBtn = document.query("#add");
+    displayAddStaffBtn.onClick.listen((e) {
+		_view.toogleDisplayMode("add");
+		_view.resetStaffInputFields();
+		_view.cleartStaffInputWarning();
+		_view.toggleSearchWarning(isShown: false);
+    });
+  	
     InputElement searchBox = document.query("#searchBox");
     searchBox.onClick.listen((e) {
       searchBox.value = '';
       _view.toggleSearchWarning(isShown: false);
-    });
-    
-    ButtonElement clearDebugBtn = document.query("#clearDebugBtn");
-    clearDebugBtn.onClick.listen((e) {
-      document.queryAll(".debug-info").forEach((element) {
-      	element.innerHtml = ''; 
-      });  
     });
     
     ButtonElement deleteBtn = document.query("#delete");
@@ -100,6 +104,20 @@ class AppController {
       if( localData.staff_ids.length == 0 ) {
       	  _view.toggleSearchWarning(isShown: true, message: "Please select at least one record.");
       }
+    });
+    
+    ButtonElement cancelAddStaffBtn = document.query("#cancelAddStaff");
+    cancelAddStaffBtn.onClick.listen((e) {
+      document.queryAll(".debug-info").forEach((element) {
+      	_view.toogleDisplayMode("display"); 
+      });  
+    });
+    
+    ButtonElement clearDebugBtn = document.query("#clearDebugBtn");
+    clearDebugBtn.onClick.listen((e) {
+      document.queryAll(".debug-info").forEach((element) {
+      	element.innerHtml = ''; 
+      });  
     });
     
     
@@ -202,6 +220,51 @@ class AppController {
   
   }
   
+  // attatch ajax events of adding new staff to DOM objects
+  void attachEventAddStaff(EventTarget element, String eventType) {
+
+    switch(eventType) {
+      case "onClick":    
+    		element.onClick.listen((e) {	
+    		 _view.cleartStaffInputWarning();
+    		 bool isValid = true;
+    		 String empNo = document.query("#staff-no").value.trim();
+			 if( !FieldValidator.validateEmpNo(empNo) ) {
+			 	document.query("#staff-no").parent.appendHtml("<span class='warning' id='new-staff-error'> ! employee no must be 3 digits and not start with 0.</span>");
+			 	isValid = false;
+			 }
+    		 String name = document.query("#staff-name").value.trim();
+    		 if( !FieldValidator.validateEmpName(name) ) {
+			 	document.query("#staff-name").parent.appendHtml("<span class='warning' id='new-staff-error'> ! name must contain only letters and spaces.</span>");
+			 	isValid = false;
+			 }
+			 name = encodeUriComponent(name);
+    		 String position = document.query("#staff-position").value.trim();
+    		 if( !FieldValidator.validateEmpName(position) ) {
+			 	document.query("#staff-position").parent.appendHtml("<span class='warning' id='new-staff-error'> ! position must contain only letters and spaces.</span>");
+			 	isValid = false;
+			 }
+			 position = encodeUriComponent(position);
+    		 String year = document.query("#staff-yearjoin").value.trim();
+    		 if( !FieldValidator.validateYear(year) ) {
+			 	document.query("#staff-yearjoin").parent.appendHtml("<span class='warning' id='new-staff-error'> ! year join must be 4 digits.</span>");
+			 	isValid = false;
+			 }
+			 if( !isValid) 
+			 	return;
+           	 String uri = "/addNewStaff?no=${empNo}&name=${name}&position=${position}&year=${year}";
+			 
+           	 HttpRequest.request(uri).then(
+              (request) {                
+					_view.updateView(request.responseText);
+					_view.toggleSearchWarning(isShown: true, message: "New staff has been added.");      		    
+               });
+            }); 
+          break;
+          
+    } // switch
+  }
+  
   // attatch ajax events of deleting staffs to DOM objects
   void attachEventDeleteStaffs(EventTarget element, String eventType) {
 
@@ -239,7 +302,7 @@ class AppController {
            	 HttpRequest.request(uri).then(
               (request) {                
 					_view.updateView(request.responseText);
-					_view.toggleSearchWarning(isShown: true, message: "Original staffs data has been recovered.");
+					_view.toggleSearchWarning(isShown: true, message: "Deleted staffs data has been recovered.");
                });
             }); 
           break;

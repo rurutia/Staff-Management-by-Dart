@@ -25,47 +25,59 @@ void main() {
   dao.processXML();
 }
 
+// read staffs data including searching 
 void loadStaffsInfo(HttpConnect connect) {
+  // process request uri
   String uri = decodeUriComponent(connect.request.uri.toString());
   int start = UriParamParser.getStart(uri);
   int count = UriParamParser.getCount(uri);
   String keyword = UriParamParser.getKeyword(uri);
-  
-  String jsonResponse;
-  if(keyword == null)
-    jsonResponse = dao.getStaffs(start, count);
-  else 
-    jsonResponse = dao.searchStaffs(start, count, keyword);
-
-  connect.response
-    ..headers.contentType = contentTypes["json"]
-    ..write(jsonResponse);
-  connect.close();
+  // call dao to perform business logic
+  String jsonResponse
+		   = (keyword == null) ? dao.getStaffs(start, count):dao.searchStaffs(start, count, keyword);
+  // send response back to client, "json" as default type
+  sendResponse(connect, jsonResponse);
 }
 
 void deleteStaffsInfo(HttpConnect connect) {
+  // process request uri
   String uri = decodeUriComponent(connect.request.uri.toString());
   String staff_ids = UriParamParser.getStaff_ids(uri);
-  
-  String jsonResponse = dao.deleteStaffsByIDs(staff_ids);
-  
-  connect.response
-    ..headers.contentType = contentTypes["json"]
-    ..write(jsonResponse);
-  connect.close();
+  // call dao to perform business logic
+  String jsonResponse = dao.deleteStaffsByIDs(staff_ids); 
+  sendResponse(connect, jsonResponse);
 }
 
 void recoverStaffsInfo(HttpConnect connect) {
+  // process request uri
   String uri = decodeUriComponent(connect.request.uri.toString());
   int start = UriParamParser.getStart(uri);
   int count = UriParamParser.getCount(uri);
-  
+  // call dao to perform business logic
   dao.recoverStaffs();
   
-  String jsonResponse = dao.getStaffs(start, count);
-  
-   connect.response
-    ..headers.contentType = contentTypes["json"]
-    ..write(jsonResponse);
+  String jsonResponse = dao.getStaffs(start, count); 
+  sendResponse(connect, jsonResponse);
+}
+
+void sendResponse(HttpConnect connect, String response, {String type:"json"}) {
+  connect.response
+    ..headers.contentType = contentTypes[type]
+    ..write(response);
   connect.close();
+}
+
+void addNewStaff(HttpConnect connect) {
+  // process request uri
+  String uri = decodeUriComponent(connect.request.uri.toString());
+  int employeeNo = UriParamParser.getEmployeeNo(uri);
+  String name = UriParamParser.getName(uri);
+  String position = UriParamParser.getPosition(uri);
+  int yearJoin = UriParamParser.getYear(uri);
+  
+  // call dao to perform business logic
+  dao.addNewStaff(employeeNo, name, position, yearJoin);
+  
+  String jsonResponse = dao.searchStaffs(0, 0, name);
+  sendResponse(connect, jsonResponse);
 }

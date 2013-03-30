@@ -86,7 +86,6 @@ section {
 /* staff table styles */
 #staff-table {
   margin: 0 auto;
-  border:1px solid black;
 }
 #staff-table th {
   padding:5px;
@@ -110,16 +109,28 @@ section {
   color: #ff0000;
   font-weight:bold;
  }
+/* new staff section */
+#add-staff-container {
+  display: none;
+} 
+table#new-staff-table td {
+  padding:5px;
+}
 /* record command section */
 #search-container {
   margin: 0 auto;
   width: 900px;
 }
-#delete, #recover {
-  float: right;
-  padding-left:10px;
+#add, #search, #delete, #recover {
   background-color: #eb66c8;
   color: #fff;
+}
+#add {
+	margin-right:30px;
+}
+#delete, #recover {
+    float: right;
+    padding-left:10px;
 }
 /* control section */
 #control-container {

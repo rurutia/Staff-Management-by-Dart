@@ -8,6 +8,7 @@ abstract class Dao {
 
    void getStaffs(int start, int count);
    void searchStaffs(int start, int count, String keyword);
+   String addNewStaff(int employeeNo, String name, String position, int yearJoin);
    String deleteStaffsByIDs(String ids);
    // recover original staffs data from delete operation
    void recoverStaffs();
@@ -104,6 +105,39 @@ class DaoXmlImpl {
 	  data['search'] = true;
 
 	  return Json.stringify(data);
+	}
+	
+	// Add new staff into XML data store
+	String addNewStaff(int employeeNo, String name, String position, int yearJoin) {
+	  Map allStaffs = xmlDoc.queryAll("staff").asMap(); 
+	  int maxId = 0;
+   	  for(var i = 0;i < allStaffs.length; i++) {
+   	    int currentId = int.parse(allStaffs[i].attributes['id']);
+      	maxId = ( maxId < currentId ) ? currentId : maxId;
+      }
+	  int newId = maxId + 1;
+	  
+	  String newStaffInfo = '''
+	  	<staff id='${newId.toString()}' deleted='false'>
+  			<employeeno>${employeeNo.toString()}</employeeno>
+    		<name>${name}</name>
+    		<position>${position}</position>
+    		<yearjoin>${yearJoin.toString()}</yearjoin>
+		</staff>
+	  ''';
+	  
+	  File file = new File(filename);
+	  String contents = file.readAsStringSync();
+	  contents = contents.replaceAll("</company>", "");
+	  StringBuffer sb = new StringBuffer(contents);
+	  sb.writeln(newStaffInfo);
+	  sb.writeln("</company>");
+	  
+	  xmlDoc = XML.parse(sb.toString());
+	  
+	  file.writeAsStringSync(sb.toString());
+	  
+	  return newStaffInfo;
 	}
 	
 	// delete staffs data from XML by setting "deleted" attribute to "false"

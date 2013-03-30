@@ -17,15 +17,15 @@ class AppViewRenderer {
 	renderTable(jsonResponse);
 	// debug info will be removed in production mode
 	renderDebugInfo("json", jsonResponse);
-//     renderDebugInfo("client", "start_index = ${controller.localData.start} & count_per_page = ${controller.localData.count}");
-      renderDebugInfo("client", "${controller.localData.toString()}");
-
+    // renderDebugInfo("client", "start_index = ${controller.localData.start} & count_per_page = ${controller.localData.count}");
+    renderDebugInfo("client", "${controller.localData.toString()}");
   }
 
   // render staff records table
   void renderTable(String jsonResponse) {
+   toogleDisplayMode("display");
    TableElement staffTable =  document.query("#staff-table");
-   staffTable.innerHtml = "";
+   staffTable.innerHtml = ""; 
    staffTable.append(new Element.html("<tr><th>Employee No</th><th>Name</th><th>Position</th><th>Year Join</th><th><input type='checkbox' id='multiSelectStaffs' /></th></tr>"));
    // parse server response json string to map
    Map staffs = Json.parse(jsonResponse);
@@ -106,8 +106,13 @@ class AppViewRenderer {
      document.queryAll(".staffCheckBox").forEach((checkBox){
      	checkBox.onClick.listen((e) { 
      		toggleSearchWarning(isShown: false);
-            int staff_id = int.parse(checkBox.parent.classes.toString().substring("id".length, 3));  	
-     		Set<String> staff_ids_set = controller.localData.staff_ids;
+     		RegExp staff_id_patt = new RegExp(r"\d+");
+     		String td_class = checkBox.parent.classes.toString();
+     		int staff_id;
+     		for(var match in staff_id_patt.allMatches(td_class)) {
+      		  staff_id = int.parse(match.group(0));
+    		}
+    		Set<String> staff_ids_set = controller.localData.staff_ids;
      		if( !checkBox.checked ) {	    
      			checkBox.parent.classes.remove("line-through");
 				staff_ids_set.remove(staff_id.toString());			
@@ -141,7 +146,12 @@ class AppViewRenderer {
      			checkBox.parent.classes.remove("line-through");		
      		} 
      		else {
-     		    int staff_id = int.parse(checkBox.parent.classes.toString().substring("id".length, 3));  	
+				RegExp staff_id_patt = new RegExp(r"\d+");
+				String td_class = checkBox.parent.classes.toString();
+				int staff_id;
+				for(var match in staff_id_patt.allMatches(td_class)) {
+				  staff_id = int.parse(match.group(0));
+    		    }
      		    staff_ids_set.add(staff_id.toString());
      		}
      		String rowClass = checkBox.parent.classes.toString();
@@ -169,6 +179,47 @@ class AppViewRenderer {
       document.query("#search-container")
         .appendHtml('<span class="warning">${message}</span>');   
     }
+  }
+  
+  // reset staff input field
+  void resetStaffInputFields() {
+  	document.queryAll(".staff-input").forEach((input) { 
+   		input.value = "";
+   	});
+  }
+  
+  // clear new staff input validation warning
+  void cleartStaffInputWarning() {
+  	if(document.query("#new-staff-error") != null ) {
+  	  document.queryAll("#new-staff-error").forEach((element) { 
+   		element.remove();
+   	  });
+    }
+  }
+  
+  // switch display mode between "display" and "add" (more in future)
+  void toogleDisplayMode(String mode){
+  	TableElement staffTable = document.query("#staff-table");
+  	DivElement addStaffContainer = document.query("#add-staff-container");    	  
+    var controlSection = document.query("#control");
+    ButtonElement deleteBtn = document.query("#delete");
+    
+  	switch(mode) {
+  		case "display": 
+  			staffTable.style.display = "block";
+  			controlSection.style.display = "block";
+  			deleteBtn.style.display = "block";
+  			addStaffContainer.style.display = "none";
+  			break;
+  		
+  		case "add":
+  			staffTable.style.display = "none";
+  			controlSection.style.display = "none";
+  			deleteBtn.style.display = "none";
+  			addStaffContainer.style.display = "block";
+  			break;
+  			
+  	} // switch
   }
 
   // render debug information (will not be displayed in production mode)

@@ -5,5 +5,6 @@ part of staff_management;
 var _mapping = {
   "/staffsInfo": loadStaffsInfo,
   "/deleteStaffsInfo": deleteStaffsInfo,
-  "/recoverStaffsInfo": recoverStaffsInfo
+  "/recoverStaffsInfo": recoverStaffsInfo,
+  "/addNewStaff": addNewStaff
 };
