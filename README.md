@@ -16,14 +16,14 @@ Plan to transit to MongoDB by implementing Database Dao.
 
 <h3>File Structure:</h3>
 
-<br>--<b>web</b>
+<br>--<h4>web</h4>
 <br>----<b>staff.dart</b>    (client Dart application entry point)
 <br>----<b>controller.dart</b>(process server response and handle client side ui events)
 <br>----<b>view.dart</b>     (render client views)
 <br>----<b>validation.dart</b>     (client side user input validation)
 <br>----<b>index.html</b>    (client web interface) 
 <br>----<b>main.css</b>      (style sheet)
-<br>----<b>webapp</b>      (server side codes)
+<br>----<h4>webapp</h4>      (server side codes)
 <br>------<b>main.dart</b>     (server management, taking client request and sending response back)
 <br>------<b>dao.dart</b>    (data access interface and concrete implementations responsible for business logic and data operation)
 <br>------<b>config.dart</b>    (uri mapping configuration)
