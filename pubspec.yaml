@@ -6,3 +6,4 @@ dependencies:
   js: any
   stream: any
   xml: any
+  mongo_dart: any

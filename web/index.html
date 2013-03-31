@@ -66,7 +66,17 @@
         </div>
       <div>
     </section>
-    
+    <hr/>
+    <section id="mongoDB" >
+    	<div id="mongoDB-container" >
+    		<button id="mongoDBbtn">Load Staffs From MongoDB</button>
+    		<br><b>The codes are still experimental at this stage. (Please check 'daoMongo.dart')</b>
+    		<br><b>Default host: 'mongodb://127.0.0.1' is used.</b> 
+    		<br><b>It creates db 'mongo-dart-test' with collection 'staffs'.</b>
+    		</b>
+    	</div>  
+    </section>
+    <hr/>
      <section id="debug" >
        <div>
        	 <h3 class="display-inline">Debug Information (will be removed before release)</h3>
@@ -79,18 +89,6 @@
          <h3 class="debug-title">client side variables</h3>
          <div id="debug-client" class="debug-info">         
          </div>
-       </div>
-     </section>
-     
-     <section id="development-info" >
-       <div>
-       	 <h3 class="display-inline">Development Log</h3>
-       	 <br>#28/03 Rewrite server side codes to program data operation to Data Access Object interface. 
-Seperate business logic and data operation from "main.dart" into "dao.dart" in which XML dao has been implemented.
-Plan to transit to MongoDB by implementing Database Dao. 
-       	 <br>#27/03  Issues in Dartium checked mode fixed. Multi-selection and data recovery have been added.
-       	 <br>#26/03  Code improved to adopt more pure MVC pattern
-       	 <br>#25/03  Delete function added
        </div>
      </section>
      

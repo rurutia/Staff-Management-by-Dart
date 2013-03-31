@@ -4680,7 +4680,7 @@ $$.AppController = {"": "Object;_localData,_view<",
     return this._localData;
   },
   setup_ui$0: function() {
-    var displayAllBtn, previousBtn, nextBtn, numPerPage, searchBtn, searchBox, deleteBtn, recoverBtn, confirmAddStaffBtn;
+    var displayAllBtn, previousBtn, nextBtn, numPerPage, searchBtn, searchBox, deleteBtn, recoverBtn, confirmAddStaffBtn, mongoDBBtn;
     displayAllBtn = $.query$1$x(document, "#displayAll");
     previousBtn = $.query$1$x(document, "#previous");
     nextBtn = $.query$1$x(document, "#next");
@@ -4690,12 +4690,14 @@ $$.AppController = {"": "Object;_localData,_view<",
     deleteBtn = $.query$1$x(document, "#delete");
     recoverBtn = $.query$1$x(document, "#recover");
     confirmAddStaffBtn = $.query$1$x(document, "#confirmAddStaff");
+    mongoDBBtn = $.query$1$x(document, "#mongoDBbtn");
     this.attachEventLoadStaffs$2(displayAllBtn, "onClick");
     this.attachEventLoadStaffs$2(previousBtn, "onClick");
     this.attachEventLoadStaffs$2(nextBtn, "onClick");
     this.attachEventLoadStaffs$2(numPerPage, "onChange");
     this.attachEventLoadStaffs$2(searchBtn, "onClick");
     this.attachEventLoadStaffs$2(searchBox, "onKeyPress");
+    this.attachEventLoadStaffs$2(mongoDBBtn, "onClick");
     this.attachEventDeleteStaffs$2(deleteBtn, "onClick");
     this.attachEventRecoverStaffs$2(recoverBtn, "onClick");
     this.attachEventAddStaff$2(confirmAddStaffBtn, "onClick");
@@ -4895,6 +4897,8 @@ $$.AppController_attachEventLoadStaffs_anon1 = {"": "Closure;this_7,element_8,nu
       uri0 = uri + "&keyword=" + keyword;
       uri = uri0;
     }
+    if (t2.$eq(t1, $.query$1$x(document, "#mongoDBbtn")) === true)
+      uri = "/staffsInfo?mongo=true";
     $.HttpRequest_request(uri, null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon0(t3));
   }
 };

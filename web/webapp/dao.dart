@@ -6,8 +6,8 @@ part of staff_management;
 // Data Access Object interface
 abstract class Dao {
 
-   void getStaffs(int start, int count);
-   void searchStaffs(int start, int count, String keyword);
+   String getStaffs(int start, int count);
+   String searchStaffs(int start, int count, String keyword);
    String addNewStaff(int employeeNo, String name, String position, int yearJoin);
    String deleteStaffsByIDs(String ids);
    // recover original staffs data from delete operation
@@ -16,7 +16,7 @@ abstract class Dao {
 }
 
 // concrete DAO class (XML implementation)
-class DaoXmlImpl {
+class DaoXmlImpl implements Dao {
    // XML data source file name
    String _filename;
    // XML data source contents
@@ -44,7 +44,7 @@ class DaoXmlImpl {
 	  });	
 	}
 
-   void getStaffs(int start, int count) {
+   String getStaffs(int start, int count) {
        // get all staff nodes from XML 
        Map allNodes = xmlDoc.queryAll({'deleted':'false'}).asMap();
     

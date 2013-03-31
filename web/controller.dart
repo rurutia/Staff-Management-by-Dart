@@ -59,6 +59,7 @@ class AppController {
     ButtonElement deleteBtn = document.query("#delete");
     ButtonElement recoverBtn = document.query("#recover");
     ButtonElement confirmAddStaffBtn = document.query("#confirmAddStaff");
+    ButtonElement mongoDBBtn = document.query("#mongoDBbtn");
    
     // attach event to relevent DOM objects
     // read staffs information from server when triggered
@@ -68,6 +69,7 @@ class AppController {
     attachEventLoadStaffs(numPerPage, "onChange");
     attachEventLoadStaffs(searchBtn, "onClick"); 
     attachEventLoadStaffs(searchBox, "onKeyPress");
+    attachEventLoadStaffs(mongoDBBtn, "onClick");
     // Delete and recover staffs from data store 
     attachEventDeleteStaffs(deleteBtn, "onClick"); 
     attachEventRecoverStaffs(recoverBtn, "onClick"); 
@@ -181,7 +183,12 @@ class AppController {
       		}
        	    uri = "${uri}&keyword=${keyword}";
        	  }
-            
+       	  // Experimental codes for testing mongoDB in Dart
+       	  // feel free to comment out if not needed
+       	  if( element == document.query("#mongoDBbtn") ) 
+       	   	 uri = "/staffsInfo?mongo=true";
+          // end of mongoDB codes
+  
             HttpRequest.request(uri).then(
               (request) {
                  _view.updateView(request.responseText);

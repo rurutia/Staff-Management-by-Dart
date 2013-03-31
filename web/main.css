@@ -121,7 +121,7 @@ table#new-staff-table td {
   margin: 0 auto;
   width: 900px;
 }
-#add, #search, #delete, #recover {
+#add, #search, #delete, #recover, #mongoDBbtn {
   background-color: #eb66c8;
   color: #fff;
 }
@@ -168,6 +168,11 @@ button#previous, button#next {
   margin-right: 20px;
   font-size: 18px;
   font-weight: bold;
+}
+/* mongoDB section */
+#mongoDB-container {
+  margin: 0 auto;
+  width: 950px;
 }
 /* debug section */
 #debug-container {
