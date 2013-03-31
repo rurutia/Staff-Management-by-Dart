@@ -1,4 +1,6 @@
 <h3>Development Log</h3> 
+<br>#31/03 Experimental MongoDB support added.
+<br>(can create initial database and load all documents in collection to client browser) 
 <br>#30/03 Add functionality implemented
 <br>#28/03 Rewrite server side codes to programme data operation to Data Access Object interface. 
 Seperate business logic and data operation from "main.dart" into "dao.dart" in which XML dao has been implemented.
@@ -26,6 +28,7 @@ Plan to transit to MongoDB by implementing Database Dao.
 <br>----<b>webapp</b>      (server side codes)
 <br>------<b>main.dart</b>     (server management, handling client request and sending response back)
 <br>------<b>dao.dart</b>    (data access interface and concrete implementations responsible for business logic and data operation)
+<br>------<b>daoMongo.dart</b>    (dao MongoDB implementation)
 <br>------<b>config.dart</b>    (uri mapping configuration)
 <br>------<b>utility.dart</b>    (unility classes and functions)
 <br>------<b>data.xml</b>    (permanent data store)
