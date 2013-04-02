@@ -121,8 +121,8 @@ table#new-staff-table td {
   margin: 0 auto;
   width: 900px;
 }
-#add, #search, #delete, #recover, #mongoDBbtn {
-  background-color: #eb66c8;
+#displayAll, #add, #search, #delete, #recover, #mongoDBbtn {
+  background-color:  rgb(30, 144, 255);
   color: #fff;
 }
 #add {

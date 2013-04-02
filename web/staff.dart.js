@@ -1586,13 +1586,13 @@ $$._AllMatchesIterable = {"": "Iterable;_re,_str",
   }
 };
 
-$$._AllMatchesIterator = {"": "Object;_re,_str,_liblib4$_current",
+$$._AllMatchesIterator = {"": "Object;_re,_str,_liblib5$_current",
   get$current: function() {
-    return this._liblib4$_current;
+    return this._liblib5$_current;
   },
   moveNext$0: function() {
-    this._liblib4$_current = this._re.firstMatch$1(this._str);
-    return this._liblib4$_current != null;
+    this._liblib5$_current = this._re.firstMatch$1(this._str);
+    return this._liblib5$_current != null;
   }
 };
 
@@ -3773,6 +3773,13 @@ $$.Iterable = {"": "Object;",
     }
     return buffer.toString$0(buffer);
   },
+  any$1: function(_, f) {
+    var t1;
+    for (t1 = this.get$iterator(this); t1.moveNext$0();)
+      if (f.call$1(t1.get$current()) === true)
+        return true;
+    return false;
+  },
   toList$1$growable: function(_, growable) {
     return $.List_List$from(this, growable);
   },
@@ -4265,6 +4272,10 @@ $$.CssClassSet = {"": "Object;",
     var t1 = this.readClasses$0();
     return t1.map$1(t1, f);
   },
+  any$1: function(_, f) {
+    var t1 = this.readClasses$0();
+    return t1.any$1(t1, f);
+  },
   get$length: function(_) {
     var t1 = this.readClasses$0();
     return t1.get$length(t1);
@@ -4559,10 +4570,10 @@ $$.FilteredElementList__filtered_anon = {"": "Closure;",
   }
 };
 
-$$._AttributeClassSet = {"": "CssClassSet;_liblib5$_element",
+$$._AttributeClassSet = {"": "CssClassSet;_liblib4$_element",
   readClasses$0: function() {
     var t1, classname, s, trimmed;
-    t1 = $.get$attributes$x(this._liblib5$_element);
+    t1 = $.get$attributes$x(this._liblib4$_element);
     classname = t1.$index(t1, "class");
     s = $.LinkedHashSet$();
     if (classname == null)
@@ -4575,7 +4586,7 @@ $$._AttributeClassSet = {"": "CssClassSet;_liblib5$_element",
     return s;
   },
   writeClasses$1: function(s) {
-    var t1 = $.get$attributes$x(this._liblib5$_element);
+    var t1 = $.get$attributes$x(this._liblib4$_element);
     t1.$indexSet(t1, "class", s.join$1(s, " "));
   }
 };
@@ -4821,11 +4832,11 @@ $$.AppController_attachEventLoadStaffs_anon = {"": "Closure;this_0,numPerPage_1"
     t2 = $.int_parse($.get$value$x(this.numPerPage_1), null, null);
     t1.get$localData().set$count(t2);
     t2 = t1.get$localData();
-    $.HttpRequest_request("/staffsInfo?start=" + $.S(t2.get$start(t2)) + "&count=" + $.S(t1.get$localData().get$count()), null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon2(t1));
+    $.HttpRequest_request("/staffsInfo?start=" + $.S(t2.get$start(t2)) + "&count=" + $.S(t1.get$localData().get$count()), null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon4(t1));
   }
 };
 
-$$.AppController_attachEventLoadStaffs__anon2 = {"": "Closure;this_2",
+$$.AppController_attachEventLoadStaffs__anon4 = {"": "Closure;this_2",
   call$1: function(request) {
     $.remove$0$ax($.query$1$x(document, "#loadAnimation"));
     this.this_2.get$_view().updateView$1($.get$responseText$x(request));
@@ -4843,11 +4854,11 @@ $$.AppController_attachEventLoadStaffs_anon0 = {"": "Closure;this_3,element_4,nu
     t2 = this.this_3;
     t2.get$localData().set$count(t1);
     t1 = t2.get$localData();
-    $.HttpRequest_request("/staffsInfo?start=" + $.S(t1.get$start(t1)) + "&count=" + $.S(t2.get$localData().get$count()), null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon1(t2));
+    $.HttpRequest_request("/staffsInfo?start=" + $.S(t1.get$start(t1)) + "&count=" + $.S(t2.get$localData().get$count()), null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon3(t2));
   }
 };
 
-$$.AppController_attachEventLoadStaffs__anon1 = {"": "Closure;this_6",
+$$.AppController_attachEventLoadStaffs__anon3 = {"": "Closure;this_6",
   call$1: function(request) {
     this.this_6.get$_view().updateView$1($.get$responseText$x(request));
   }
@@ -4855,7 +4866,7 @@ $$.AppController_attachEventLoadStaffs__anon1 = {"": "Closure;this_6",
 
 $$.AppController_attachEventLoadStaffs_anon1 = {"": "Closure;this_7,element_8,numPerPage_9",
   call$1: function(e) {
-    var t1, t2, t3, t4, uri, keyword, uri0;
+    var t1, t2, t3, t4, isMongo, uri, keyword, uri0;
     t1 = this.element_8;
     t2 = $.getInterceptor(t1);
     if (t2.$eq(t1, $.query$1$x(document, "#previous")) === true) {
@@ -4864,13 +4875,19 @@ $$.AppController_attachEventLoadStaffs_anon1 = {"": "Closure;this_7,element_8,nu
       t4.set$start(t4, $.$sub$n(t4.get$start(t4), t3.get$localData().get$count()));
       t4 = $.int_parse($.get$value$x(this.numPerPage_9), null, null);
       t3.get$localData().set$count(t4);
-    }
+      t3 = $.get$classes$x(t1);
+      isMongo = t3.any$1(t3, new $.AppController_attachEventLoadStaffs__anon0()) && true;
+    } else
+      isMongo = false;
     if (t2.$eq(t1, $.query$1$x(document, "#next")) === true) {
       t3 = this.this_7;
       t4 = t3.get$localData();
       t4.set$start(t4, $.$add$ns(t4.get$start(t4), t3.get$localData().get$count()));
       t4 = $.int_parse($.get$value$x(this.numPerPage_9), null, null);
       t3.get$localData().set$count(t4);
+      t3 = $.get$classes$x(t1);
+      if (t3.any$1(t3, new $.AppController_attachEventLoadStaffs__anon1()))
+        isMongo = true;
     }
     if (t2.$eq(t1, $.query$1$x(document, "#displayAll")) === true) {
       t3 = this.this_7;
@@ -4886,24 +4903,48 @@ $$.AppController_attachEventLoadStaffs_anon1 = {"": "Closure;this_7,element_8,nu
       t3.get$localData().set$count(0);
     }
     t3 = this.this_7;
-    t4 = t3.get$localData();
-    uri = "/staffsInfo?start=" + $.S(t4.get$start(t4)) + "&count=" + $.S(t3.get$localData().get$count());
+    if (isMongo) {
+      t4 = t3.get$localData();
+      uri = "/staffsInfo?start=" + $.S(t4.get$start(t4)) + "&count=" + $.S(t3.get$localData().get$count()) + "&mongo=true";
+    } else {
+      t4 = t3.get$localData();
+      uri = "/staffsInfo?start=" + $.S(t4.get$start(t4)) + "&count=" + $.S(t3.get$localData().get$count());
+    }
     if (t2.$eq(t1, $.query$1$x(document, "#search")) === true) {
       keyword = $.encodeUriComponent($.trim$0$s($.get$value$x($.query$1$x(document, "#searchBox"))));
       if (keyword.length === 0) {
-        t3.get$_view().toggleSearchWarning$2$isShown$message(true, "keyword can not be empty.");
+        this.this_7.get$_view().toggleSearchWarning$2$isShown$message(true, "keyword can not be empty.");
         return;
       }
       uri0 = uri + "&keyword=" + keyword;
       uri = uri0;
     }
-    if (t2.$eq(t1, $.query$1$x(document, "#mongoDBbtn")) === true)
-      uri = "/staffsInfo?mongo=true";
-    $.HttpRequest_request(uri, null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon0(t3));
+    if (t2.$eq(t1, $.query$1$x(document, "#mongoDBbtn")) === true) {
+      t1 = this.this_7;
+      t2 = t1.get$localData();
+      t2.set$start(t2, 0);
+      t2 = $.int_parse($.get$value$x(this.numPerPage_9), null, null);
+      t1.get$localData().set$count(t2);
+      t2 = t1.get$localData();
+      uri = "/staffsInfo?start=" + $.S(t2.get$start(t2)) + "&count=" + $.S(t1.get$localData().get$count()) + "&mongo=true";
+    }
+    $.HttpRequest_request(uri, null, null, null, null, null).then$1(new $.AppController_attachEventLoadStaffs__anon2(this.this_7));
   }
 };
 
-$$.AppController_attachEventLoadStaffs__anon0 = {"": "Closure;this_10",
+$$.AppController_attachEventLoadStaffs__anon0 = {"": "Closure;",
+  call$1: function(c) {
+    return $.$eq(c, "mongoDB");
+  }
+};
+
+$$.AppController_attachEventLoadStaffs__anon1 = {"": "Closure;",
+  call$1: function(c) {
+    return $.$eq(c, "mongoDB");
+  }
+};
+
+$$.AppController_attachEventLoadStaffs__anon2 = {"": "Closure;this_10",
   call$1: function(request) {
     this.this_10.get$_view().updateView$1($.get$responseText$x(request));
   }
@@ -5052,8 +5093,8 @@ $$.AppViewRenderer = {"": "Object;_controller",
     for (t2 = $.get$iterator$ax(staffs.get$keys()), t3 = $.getInterceptor$asx(staffs); t2.moveNext$0();) {
       t4 = t2.get$current();
       if (typeof t4 !== "string")
-        return this.renderTable$1$bailout(1, t3, staffs, t1, staffTable, t2, t4);
-      if (t4 === "total" || t4 === "next" || t4 === "previous")
+        return this.renderTable$1$bailout(1, t2, staffs, t1, t3, staffTable, t4);
+      if (t4 === "total" || t4 === "next" || t4 === "previous" || t4 === "mongoDB")
         break;
       staff = t3.$index(staffs, t4);
       sb = $.StringBuffer$("<tr>");
@@ -5070,11 +5111,16 @@ $$.AppViewRenderer = {"": "Object;_controller",
       t1 = t3.$index(staffs, "total");
       t2 = this.get$controller(this).get$localData();
       t2.set$total(t2, t1);
+      if (staffs.containsKey$1("mongoDB") === true) {
+        t1 = this.get$controller(this).get$localData();
+        this.updatePagination$2$isMongoDB(t1.get$total(t1), true);
+      } else {
+        t1 = this.get$controller(this).get$localData();
+        this.updatePagination$1(t1.get$total(t1));
+      }
       t1 = this.get$controller(this).get$localData();
-      this.updatePagination$1(t1.get$total(t1));
-      t2 = this.get$controller(this).get$localData();
-      t3 = "total records: " + $.S(t2.get$total(t2));
-      $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t3;
+      t2 = "total records: " + $.S(t1.get$total(t1));
+      $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t2;
       t1 = this.get$controller(this).get$localData();
       if ($.$eq(t1.get$total(t1), 0) !== true)
         this.toggleSearchWarning$1$isShown(false);
@@ -5088,9 +5134,14 @@ $$.AppViewRenderer = {"": "Object;_controller",
       t2 = "total records: " + $.S(t1.get$total(t1));
       $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t2;
     }
-    this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
+    if (staffs.containsKey$1("mongoDB") === true)
+      this.updatePaginationLeftRight$3$isMongoDB(staffs.containsKey$1("previous"), staffs.containsKey$1("next"), true);
+    else
+      this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
+    if (staffs.containsKey$1("mongoDB") === true)
+      this.toggleSearchWarning$2$isShown$message(true, "data read from MongoDB");
   },
-  renderTable$1$bailout: function(state0, t3, staffs, t1, staffTable, t2, t4) {
+  renderTable$1$bailout: function(state0, t2, staffs, t1, t3, staffTable, t4) {
     switch (state0) {
       case 0:
         this.toogleDisplayMode$1("display");
@@ -5113,7 +5164,7 @@ $$.AppViewRenderer = {"": "Object;_controller",
               case 1:
                 state0 = 0;
                 t5 = $.getInterceptor(t4);
-                if (t5.$eq(t4, "total") === true || t5.$eq(t4, "next") === true || t5.$eq(t4, "previous") === true)
+                if (t5.$eq(t4, "total") === true || t5.$eq(t4, "next") === true || t5.$eq(t4, "previous") === true || t5.$eq(t4, "mongoDB") === true)
                   break L0;
                 staff = t3.$index(staffs, t4);
                 sb = $.StringBuffer$("<tr>");
@@ -5130,11 +5181,16 @@ $$.AppViewRenderer = {"": "Object;_controller",
           t1 = t3.$index(staffs, "total");
           t2 = this.get$controller(this).get$localData();
           t2.set$total(t2, t1);
+          if (staffs.containsKey$1("mongoDB") === true) {
+            t1 = this.get$controller(this).get$localData();
+            this.updatePagination$2$isMongoDB(t1.get$total(t1), true);
+          } else {
+            t1 = this.get$controller(this).get$localData();
+            this.updatePagination$1(t1.get$total(t1));
+          }
           t1 = this.get$controller(this).get$localData();
-          this.updatePagination$1(t1.get$total(t1));
-          t2 = this.get$controller(this).get$localData();
-          t3 = "total records: " + $.S(t2.get$total(t2));
-          $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t3;
+          t2 = "total records: " + $.S(t1.get$total(t1));
+          $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t2;
           t1 = this.get$controller(this).get$localData();
           if ($.$eq(t1.get$total(t1), 0) !== true)
             this.toggleSearchWarning$1$isShown(false);
@@ -5148,15 +5204,20 @@ $$.AppViewRenderer = {"": "Object;_controller",
           t2 = "total records: " + $.S(t1.get$total(t1));
           $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t2;
         }
-        this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
+        if (staffs.containsKey$1("mongoDB") === true)
+          this.updatePaginationLeftRight$3$isMongoDB(staffs.containsKey$1("previous"), staffs.containsKey$1("next"), true);
+        else
+          this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
+        if (staffs.containsKey$1("mongoDB") === true)
+          this.toggleSearchWarning$2$isShown$message(true, "data read from MongoDB");
     }
   },
-  updatePagination$1: function(total) {
+  updatePagination$2$isMongoDB: function(total, isMongoDB) {
     var count, pageCount, box_0, box_00, pageLink, t1;
     $.set$innerHtml$x($.query$1$x(document, "#pagination-container"), "");
     count = $.int_parse($.get$value$x($.query$1$x(document, "#number-per-page")), null, null);
     if (typeof count !== "number")
-      return this.updatePagination$1$bailout(1, total, count);
+      return this.updatePagination$2$isMongoDB$bailout(1, total, isMongoDB, count);
     pageCount = $.JSNumber_methods.toInt$0($.JSNumber_methods.ceil$0($.$div$n(total, count)));
     box_0 = {};
     for (box_0.i_0 = 0; $.$lt$n(box_0.i_0, pageCount); box_00 = {}, box_00.i_0 = box_0.i_0, box_00.i_0 = $.$add$ns(box_00.i_0, 1), box_0 = box_00) {
@@ -5167,10 +5228,10 @@ $$.AppViewRenderer = {"": "Object;_controller",
         t1.add$1(t1, "page-link-highlight");
       }
       $.append$1$x($.query$1$x(document, "#pagination-container"), pageLink);
-      $.get$onClick$x(pageLink).listen$1(new $.AppViewRenderer_updatePagination_anon(box_0, this, count));
+      $.get$onClick$x(pageLink).listen$1(new $.AppViewRenderer_updatePagination_anon(box_0, this, isMongoDB, count));
     }
   },
-  updatePagination$1$bailout: function(state0, total, count) {
+  updatePagination$2$isMongoDB$bailout: function(state0, total, isMongoDB, count) {
     var pageCount, box_0, box_00, pageLink, t1;
     pageCount = $.JSNumber_methods.toInt$0($.JSNumber_methods.ceil$0($.$div$n(total, count)));
     box_0 = {};
@@ -5182,15 +5243,34 @@ $$.AppViewRenderer = {"": "Object;_controller",
         t1.add$1(t1, "page-link-highlight");
       }
       $.append$1$x($.query$1$x(document, "#pagination-container"), pageLink);
-      $.get$onClick$x(pageLink).listen$1(new $.AppViewRenderer_updatePagination_anon(box_0, this, count));
+      $.get$onClick$x(pageLink).listen$1(new $.AppViewRenderer_updatePagination_anon(box_0, this, isMongoDB, count));
     }
   },
-  updatePaginationLeftRight$2: function(hasPrevious, hasNext) {
-    var previousBtn, nextBtn;
+  updatePagination$1: function(total) {
+    return this.updatePagination$2$isMongoDB(total, false);
+  },
+  updatePaginationLeftRight$3$isMongoDB: function(hasPrevious, hasNext, isMongoDB) {
+    var previousBtn, nextBtn, t1, t2;
     previousBtn = $.query$1$x(document, "#previous");
     nextBtn = $.query$1$x(document, "#next");
+    t1 = $.getInterceptor$x(nextBtn);
+    t2 = $.getInterceptor$x(previousBtn);
+    if (isMongoDB) {
+      t2 = t2.get$classes(previousBtn);
+      t2.add$1(t2, "mongoDB");
+      t1 = t1.get$classes(nextBtn);
+      t1.add$1(t1, "mongoDB");
+    } else {
+      t2 = t2.get$classes(previousBtn);
+      t2.remove$1(t2, "mongoDB");
+      t1 = t1.get$classes(nextBtn);
+      t1.remove$1(t1, "mongoDB");
+    }
     $.set$disabled$x(previousBtn, hasPrevious !== true || false);
     $.set$disabled$x(nextBtn, hasNext !== true || false);
+  },
+  updatePaginationLeftRight$2: function(hasPrevious, hasNext) {
+    return this.updatePaginationLeftRight$3$isMongoDB(hasPrevious, hasNext, false);
   },
   toggleStaffSelection$0: function() {
     var t1 = $.queryAll$1$x(document, ".staffCheckBox");
@@ -5256,24 +5336,30 @@ $$.AppViewRenderer = {"": "Object;_controller",
   }
 };
 
-$$.AppViewRenderer_updatePagination_anon = {"": "Closure;box_0,this_1,count_2",
+$$.AppViewRenderer_updatePagination_anon = {"": "Closure;box_0,this_1,isMongoDB_2,count_3",
   call$1: function(e) {
-    var t1, t2, t3, t4, t5;
+    var t1, t2, t3, t4, t5, uri;
     t1 = this.box_0.i_0;
-    t2 = this.count_2;
+    t2 = this.count_3;
     t1 = $.$mul$n(t1, t2);
     t3 = this.this_1;
     t4 = $.getInterceptor$x(t3);
     t5 = t4.get$controller(t3).get$localData();
     t5.set$start(t5, t1);
-    t1 = t4.get$controller(t3).get$localData();
-    $.HttpRequest_request("/staffsInfo?start=" + $.S(t1.get$start(t1)) + "&count=" + $.S(t2), null, null, null, null, null).then$1(new $.AppViewRenderer_updatePagination__anon(t3));
+    if (this.isMongoDB_2) {
+      t1 = t4.get$controller(t3).get$localData();
+      uri = "/staffsInfo?start=" + $.S(t1.get$start(t1)) + "&count=" + $.S(t2) + "&mongo=true";
+    } else {
+      t1 = t4.get$controller(t3).get$localData();
+      uri = "/staffsInfo?start=" + $.S(t1.get$start(t1)) + "&count=" + $.S(t2);
+    }
+    $.HttpRequest_request(uri, null, null, null, null, null).then$1(new $.AppViewRenderer_updatePagination__anon(t3));
   }
 };
 
-$$.AppViewRenderer_updatePagination__anon = {"": "Closure;this_3",
+$$.AppViewRenderer_updatePagination__anon = {"": "Closure;this_4",
   call$1: function(request) {
-    this.this_3.updateView$1($.get$responseText$x(request));
+    this.this_4.updateView$1($.get$responseText$x(request));
   }
 };
 

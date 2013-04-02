@@ -61,7 +61,7 @@ class AppController {
     ButtonElement confirmAddStaffBtn = document.query("#confirmAddStaff");
     ButtonElement mongoDBBtn = document.query("#mongoDBbtn");
    
-    // attach event to relevent DOM objects
+    // hook ajax load staffs event to relevent DOM objects
     // read staffs information from server when triggered
     attachEventLoadStaffs(displayAllBtn, "onClick");
     attachEventLoadStaffs(previousBtn, "onClick");
@@ -155,25 +155,34 @@ class AppController {
           }); 
           break;
       
-      case "onClick": 
+      case "onClick":       
     		element.onClick.listen((e) {
-    		  if( element == document.query("#previous") ) {
-       	    localData.start -= localData.count;
-       	    localData.count = int.parse(numPerPage.value);
-       	  }
-       	  if( element == document.query("#next") ) {
-       	    localData.start += localData.count;
-       	    localData.count = int.parse(numPerPage.value);
-       	  }
-       	  if( element == document.query("#displayAll") ) {
-       	    localData.start = 0;
-       	    localData.count = int.parse(numPerPage.value);
-       	  }
-       	  if( element == document.query("#search") ) {
-       	    localData.start = 0;
-       	    localData.count = 0;
-       	  }
-            String uri = "/staffsInfo?start=${localData.start}&count=${localData.count}";
+			  bool isMongo = false;
+			  if( element == document.query("#previous") ) {
+				localData.start -= localData.count;
+				localData.count = int.parse(numPerPage.value);
+				if( element.classes.any((c) => c == "mongoDB" ) )
+				  isMongo = true;
+			  }
+			  if( element == document.query("#next") ) {
+				localData.start += localData.count;
+				localData.count = int.parse(numPerPage.value);
+				if( element.classes.any((c) => c == "mongoDB" ) )
+				  isMongo = true;
+			  }
+			  if( element == document.query("#displayAll") ) {
+				localData.start = 0;
+				localData.count = int.parse(numPerPage.value);
+			  }
+			  if( element == document.query("#search") ) {
+				localData.start = 0;
+				localData.count = 0;
+			  }
+            String uri;
+            if( isMongo )
+            	uri = "/staffsInfo?start=${localData.start}&count=${localData.count}&mongo=true";
+            else
+            	uri = "/staffsInfo?start=${localData.start}&count=${localData.count}";            
             if( element == document.query("#search") ) {
               InputElement searchBox = document.query("#searchBox");
               String keyword = encodeUriComponent(searchBox.value.trim());
@@ -185,14 +194,16 @@ class AppController {
        	  }
        	  // Experimental codes for testing mongoDB in Dart
        	  // feel free to comment out if not needed
-       	  if( element == document.query("#mongoDBbtn") ) 
-       	   	 uri = "/staffsInfo?mongo=true";
+       	  if( element == document.query("#mongoDBbtn") ) {
+       	  	 localData.start = 0;
+             localData.count = int.parse(numPerPage.value);
+       	   	 uri = "/staffsInfo?start=${localData.start}&count=${localData.count}&mongo=true";
+       	  }
           // end of mongoDB codes
   
             HttpRequest.request(uri).then(
               (request) {
-                 _view.updateView(request.responseText);
-                 
+                 _view.updateView(request.responseText);           
                });
           }); 
           break;

@@ -31,24 +31,25 @@ void main() {
 void loadStaffsInfo(HttpConnect connect) {
   String uri = decodeUriComponent(connect.request.uri.toString());
   
+  // process request uri
+  int start = UriParamParser.getStart(uri);
+  int count = UriParamParser.getCount(uri);
+  String keyword = UriParamParser.getKeyword(uri);
+  
   // Dart MongoDB test, experimental codes which will be improved in future
   // Feel free to comment out to ignore MongoDB part of the application 
   if( uri.contains('mongo') ) {
   	DaoMongoDBImpl daoMongo = 
    	     new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');
-    var future = daoMongo.getStaffs();
+    var future = daoMongo.getStaffs(start, count);
     future.then((results) {
    	  String str = results;
       sendResponse(connect, str);   
     });  
     return;
   }
-  
   // back to normal flow
-  // process request uri
-  int start = UriParamParser.getStart(uri);
-  int count = UriParamParser.getCount(uri);
-  String keyword = UriParamParser.getKeyword(uri);
+  
   // call dao to perform business logic
   String jsonResponse
 		   = (keyword == null) ? dao.getStaffs(start, count):dao.searchStaffs(start, count, keyword);

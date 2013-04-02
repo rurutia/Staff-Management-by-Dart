@@ -83,9 +83,11 @@ class DaoMongoDBImpl implements Dao {
    	 coll = db.collection(collection);
    }
 
-   Future getStaffs() {
+   Future getStaffs(int start, int count) {
 	  Map data = {};
 	  var completer = new Completer();
+	  int end;
+	  int staffs_total;
 	  // internal helping function to retrieve every staff document and build a map
 	  build_map(doc) { 
 		  Map staff = {};
@@ -100,14 +102,24 @@ class DaoMongoDBImpl implements Dao {
 	     // load original staff data into database, reset it every time before use
 	  	 coll.remove();
 		 coll.insertAll(documents);
-	  })
-	  .then((c) {
-	    // iterate through every document in collection and put into the map
-		return coll.find().each( (doc) => build_map(doc) );
+	  }).then((c) {
+	  	// get total documents in "staffs" collection
+    	return coll.count(where.gt("_id", "0"));
+	  }).then((total) {
+	    staffs_total = total;
+	    end = (start + count ) > staffs_total ? staffs_total : (start + count);
+	    
+	    // iterate through documents within range of ids in collection and put into the map
+		return coll.find(where.inRange("_id", (++start).toString(), end.toString(), minInclude:true, maxInclude:true)).each( (doc) => build_map(doc) );
+// 		return coll.find(where.inRange("_id", "6", "8", minInclude:true, maxInclude:true)).each( (doc) => build_map(doc) );
+
 	  }).then((val) {
-		db.close();
-		data['total'] = data.length;
-		data['next'] = true;
+	    data['total'] = staffs_total;
+		if( (--start) > 0 ) data['previous'] = true;
+        if( end < staffs_total ) data['next'] = true;
+		data['mongoDB'] = true;
+		db.close();	
+		
 		// convert data map to Json string
 		completer.complete(Json.stringify(data));
 	  });

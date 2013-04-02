@@ -54,7 +54,7 @@
         <div class="clear"></div>
         <div id="number-per-page-container">
           <span id="total-count"></span>
-          <button id="displayAll">Display Records</button>
+          <button id="displayAll">Display Staffs From XML</button>
           <label for="number-per-page">records per page:</label>
           <select id="number-per-page">
             <option value="1">1</option>
@@ -69,8 +69,9 @@
     <hr/>
     <section id="mongoDB" >
     	<div id="mongoDB-container" >
-    		<button id="mongoDBbtn">Load Staffs From MongoDB</button>
-    		<br><b>The codes are still experimental at this stage. (Please check 'daoMongo.dart')</b>
+    		<button id="mongoDBbtn">Display Staffs From MongoDB</button>
+    		<br><b>MongoDB related implementations are still experimental(Please check 'daoMongo.dart').</b>
+    		<br><b>Only loading staffs and pagination are supported at this stage.</b>
     		<br><b>Default host: 'mongodb://127.0.0.1' is used.</b> 
     		<br><b>If successful,db 'mongo-dart-test' with collection 'staffs' will be created.</b>
     		</b>

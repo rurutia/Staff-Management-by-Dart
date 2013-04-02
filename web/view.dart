@@ -31,7 +31,7 @@ class AppViewRenderer {
    Map staffs = Json.parse(jsonResponse);
 
    for(String key in staffs.keys) {
-     if( key == "total" || key == "next" || key == "previous" ) break;
+     if( key == "total" || key == "next" || key == "previous" || key == "mongoDB" ) break;
      Map staff = staffs[key];
      StringBuffer sb = new StringBuffer('<tr>');
      for(String attrKey in staff.keys) {
@@ -48,7 +48,10 @@ class AppViewRenderer {
                            
    if( staffs.containsKey("total") ) {
      controller.localData.total = staffs["total"];
-     updatePagination(controller.localData.total);
+     if( staffs.containsKey("mongoDB") )
+       updatePagination(controller.localData.total, isMongoDB: true);
+     else
+       updatePagination(controller.localData.total);
      document.query("#total-count").text = "total records: ${controller.localData.total}";
      if( controller.localData.total !=0) {
      	toggleSearchWarning(isShown: false);
@@ -63,13 +66,21 @@ class AppViewRenderer {
      document.query("#total-count").text = "total records: ${controller.localData.total}";   
    }
    
-   updatePaginationLeftRight(staffs.containsKey("previous"),
-                             staffs.containsKey("next")
-   );    
+   if( staffs.containsKey("mongoDB") ) 
+	   updatePaginationLeftRight(staffs.containsKey("previous"),
+								 staffs.containsKey("next"),
+								 isMongoDB: true
+	   );    
+   else
+		updatePaginationLeftRight(staffs.containsKey("previous"),
+								 staffs.containsKey("next")
+	   );  
+   if( staffs.containsKey("mongoDB"))
+     toggleSearchWarning(isShown: true, message: "data read from MongoDB");
  }
 
   // update pagination links 
-  void updatePagination(int total) {
+  void updatePagination(int total, {bool isMongoDB: false}) {
     document.query("#pagination-container").innerHtml = '';
     SelectElement numPerPage = document.query("#number-per-page"); 
     var count = int.parse(numPerPage.value);
@@ -83,7 +94,13 @@ class AppViewRenderer {
       // register click event to each link   
       pageLink.onClick.listen((e) {
       	 controller.localData.start = i * count;
-           String uri = "/staffsInfo?start=${controller.localData.start}&count=${count}";
+      	 String uri;
+      	 if( isMongoDB )
+           uri = "/staffsInfo?start=${controller.localData.start}&count=${count}&mongo=true";
+         else
+           uri = "/staffsInfo?start=${controller.localData.start}&count=${count}";
+
+         
            HttpRequest.request(uri).then(
              (request) {
                 updateView(request.responseText);
@@ -94,9 +111,18 @@ class AppViewRenderer {
   }
 
   // enable or disable pagination control buttons 
-  void updatePaginationLeftRight(bool hasPrevious, bool hasNext) {
+  void updatePaginationLeftRight(bool hasPrevious, bool hasNext, {bool isMongoDB: false}) {
 	ButtonElement previousBtn = document.query('#previous'); 
 	ButtonElement nextBtn = document.query('#next');
+	if( isMongoDB ) {
+	  previousBtn.classes.add("mongoDB");
+	  nextBtn.classes.add("mongoDB");
+	}
+	else {
+// 	window.alert(previousBtn.classes.toString());
+      previousBtn.classes.remove("mongoDB");
+	  nextBtn.classes.remove("mongoDB");
+	}
 	previousBtn.disabled = hasPrevious ? false : true;
 	nextBtn.disabled = hasNext ? false : true; 
   }
