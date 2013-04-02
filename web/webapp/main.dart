@@ -11,6 +11,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 part "config.dart";
 part "dao.dart";
+part "daoXML.dart";
 part "daoMongo.dart";
 part "utility.dart";
 
