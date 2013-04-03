@@ -44,6 +44,9 @@ section {
   margin: 0 auto;
   width: 960px;
 }
+tr:hover {
+  background-color: #ddd;
+}
 .align-left {
   float: left;
   padding: 8px 0 0 0;
@@ -93,7 +96,7 @@ section {
   border:1px solid black;
   font-size: 18px;
   font-weight: bold; 
-  background-color: #ccc;
+  background-color: #bbb;
 }
 #staff-table td {
   padding:5px;
