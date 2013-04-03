@@ -12,7 +12,7 @@ abstract class Dao {
    // add new staff to data store
    String addNewStaff(int employeeNo, String name, String position, int yearJoin);
    // delete staffs from data store
-   String deleteStaffsByIDs(String ids);
+   String deleteStaffsByIDs(List<String> ids);
    // recover original staffs data from deletion
    void recoverStaffs();
    

@@ -128,11 +128,11 @@ class DaoXmlImpl implements Dao {
 	
 	// delete staffs data from XML by setting "deleted" attribute to "false"
 	// call "recoverStaffs" method to recover
-	String deleteStaffsByIDs(String ids) {
+	String deleteStaffsByIDs(List<String> ids) {
 	   File file = new File(filename);
 	   String contents = file.readAsStringSync();
 	   RegExp staffPatt;
-	   ids.split(',').forEach((id) {
+	   ids.forEach((id) {
 		 String patt = "<staff id='${id}' deleted='false'>";
 		 staffPatt = new RegExp(patt, multiLine:true);
 		 contents = contents.replaceAll(staffPatt, "<staff id='${id}' deleted='true'>");

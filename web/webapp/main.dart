@@ -30,16 +30,15 @@ void main() {
 
 // read staffs data including searching 
 void loadStaffsInfo(HttpConnect connect) {
-  String uri = decodeUriComponent(connect.request.uri.toString());
-  
   // process request uri
-  int start = UriParamParser.getStart(uri);
-  int count = UriParamParser.getCount(uri);
-  String keyword = UriParamParser.getKeyword(uri);
+  UriParamParser parser = new UriParamParser(connect.request);
+  int start = parser.getParamValue('start', type:UriParamParser.TYPE_INT);
+  int count = parser.getParamValue('count', type:UriParamParser.TYPE_INT);
+  String keyword = parser.getParamValue('keyword');
   
   // Dart MongoDB test, experimental codes which will be improved in future
   // Feel free to comment out to ignore MongoDB part of the application 
-  if( uri.contains('mongo') ) {
+  if( parser.containsParam('mongo') ) {
   	DaoMongoDBImpl daoMongo = 
    	     new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');
     var future = daoMongo.getStaffs(start, count);
@@ -59,9 +58,13 @@ void loadStaffsInfo(HttpConnect connect) {
 }
 
 void deleteStaffsInfo(HttpConnect connect) {
+//   print(connect.request.queryParameters.toString());
   // process request uri
-  String uri = decodeUriComponent(connect.request.uri.toString());
-  String staff_ids = UriParamParser.getStaff_ids(uri);
+  UriParamParser parser = new UriParamParser(connect.request);
+  List<String> staff_ids = parser.getParamValue('staff_ids', 
+  											type:UriParamParser.TYPE_LIST_STRING, 
+  											pattern: new RegExp(","));
+
   // call dao to perform business logic
   String jsonResponse = dao.deleteStaffsByIDs(staff_ids); 
   sendResponse(connect, jsonResponse);
@@ -69,13 +72,28 @@ void deleteStaffsInfo(HttpConnect connect) {
 
 void recoverStaffsInfo(HttpConnect connect) {
   // process request uri
-  String uri = decodeUriComponent(connect.request.uri.toString());
-  int start = UriParamParser.getStart(uri);
-  int count = UriParamParser.getCount(uri);
+  UriParamParser parser = new UriParamParser(connect.request);
+  int start = parser.getParamValue('start', type:UriParamParser.TYPE_INT);
+  int count = parser.getParamValue('count', type:UriParamParser.TYPE_INT);
   // call dao to perform business logic
   dao.recoverStaffs();
   
   String jsonResponse = dao.getStaffs(start, count); 
+  sendResponse(connect, jsonResponse);
+}
+
+void addNewStaff(HttpConnect connect) {
+  // process request uri
+  UriParamParser parser = new UriParamParser(connect.request);
+  int employeeNo = parser.getParamValue('no', type:UriParamParser.TYPE_INT);
+  String name = parser.getParamValue('name');
+  String position = parser.getParamValue('position');
+  int yearJoin = parser.getParamValue('year', type:UriParamParser.TYPE_INT);
+  
+  // call dao to perform business logic
+  dao.addNewStaff(employeeNo, name, position, yearJoin);
+  
+  String jsonResponse = dao.searchStaffs(0, 0, name);
   sendResponse(connect, jsonResponse);
 }
 
@@ -84,19 +102,4 @@ void sendResponse(HttpConnect connect, String response, {String type:"json"}) {
     ..headers.contentType = contentTypes[type]
     ..write(response);
   connect.close();
-}
-
-void addNewStaff(HttpConnect connect) {
-  // process request uri
-  String uri = decodeUriComponent(connect.request.uri.toString());
-  int employeeNo = UriParamParser.getEmployeeNo(uri);
-  String name = UriParamParser.getName(uri);
-  String position = UriParamParser.getPosition(uri);
-  int yearJoin = UriParamParser.getYear(uri);
-  
-  // call dao to perform business logic
-  dao.addNewStaff(employeeNo, name, position, yearJoin);
-  
-  String jsonResponse = dao.searchStaffs(0, 0, name);
-  sendResponse(connect, jsonResponse);
 }
