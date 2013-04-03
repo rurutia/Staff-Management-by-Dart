@@ -1,4 +1,5 @@
 <h3>Development Log</h3> 
+<br>#03/04 New UrlParamParser("utility.dart") implementation utilizing HttpRequest QueryParameter property.
 <br>#02/04 Pagination with MongoDB implemented.
 <br>#31/03 Experimental MongoDB support added.
 <br>(can create initial database and load all documents in collection to client browser) 
