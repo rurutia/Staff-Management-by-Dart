@@ -7,7 +7,7 @@ class DaoMongoDBImpl implements Dao {
    List _documents = [
                                  {
                                    "_id": "1",
-                                   "-deleted": "true",
+                                   "-deleted": "false",
                                    "employeeno": "mongo101",
                                    "name": "Michael Yu",
                                    "position": "Developer",
@@ -15,7 +15,7 @@ class DaoMongoDBImpl implements Dao {
                                  },
                                  {
                                    "_id": "2",
-                                   "-deleted": "true",
+                                   "-deleted": "false",
                                    "employeeno": "mongo102",
                                    "name": "Steve Jones",
                                    "position": "Project Manager",
@@ -23,7 +23,7 @@ class DaoMongoDBImpl implements Dao {
                                  },
                                  {
                                    "_id": "3",
-                                   "-deleted": "true",
+                                   "-deleted": "false",
                                    "employeeno": "mongo103",
                                    "name": "Bernard Kean",
                                    "position": "Database Admin",
@@ -31,7 +31,7 @@ class DaoMongoDBImpl implements Dao {
                                  },
                                  {
                                    "_id": "4",
-                                   "-deleted": "true",
+                                   "-deleted": "false",
                                    "employeeno": "mongo104",
                                    "name": "Julia Anderson",
                                    "position": "Payroll Accountant",
@@ -39,7 +39,7 @@ class DaoMongoDBImpl implements Dao {
                                  },
                                  {
                                    "_id": "5",
-                                   "-deleted": "true",
+                                   "-deleted": "false",
                                    "employeeno": "mongo105",
                                    "name": "Bill Nielson",
                                    "position": "Senior Developer",
