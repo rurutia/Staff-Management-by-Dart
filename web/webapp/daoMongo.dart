@@ -81,6 +81,13 @@ class DaoMongoDBImpl implements Dao {
    DaoMongoDBImpl(String host, String db_name, String collection) {
    	 db = new Db('$host/$db_name');
    	 coll = db.collection(collection);
+   	 db.open().then((c){
+	   // load original staff data into database, reset it every time before use
+	   coll.remove();
+	   coll.insertAll(documents);
+	 }).then((c){
+	   db.close();
+	 });
    }
 
    Future getStaffs(int start, int count) {
@@ -98,11 +105,7 @@ class DaoMongoDBImpl implements Dao {
 		  data[doc['_id']] = staff;
 	  }
   	  
-	  db.open().then((c){
-	     // load original staff data into database, reset it every time before use
-	  	 coll.remove();
-		 coll.insertAll(documents);
-	  }).then((c) {
+	  db.open().then((c) {
 	  	// get total documents in "staffs" collection
     	return coll.count(where.gt("_id", "0"));
 	  }).then((total) {
@@ -111,8 +114,6 @@ class DaoMongoDBImpl implements Dao {
 	    
 	    // iterate through documents within range of ids in collection and put into the map
 		return coll.find(where.inRange("_id", (++start).toString(), end.toString(), minInclude:true, maxInclude:true)).each( (doc) => build_map(doc) );
-// 		return coll.find(where.inRange("_id", "6", "8", minInclude:true, maxInclude:true)).each( (doc) => build_map(doc) );
-
 	  }).then((val) {
 	    data['total'] = staffs_total;
 		if( (--start) > 0 ) data['previous'] = true;
@@ -125,5 +126,20 @@ class DaoMongoDBImpl implements Dao {
 	  });
 	  return completer.future;
 	}
+
+  Future deleteStaffsByIDs(List<String> ids) {
+    Map data = {};
+  	var completer = new Completer();
+  	db.open().then((c){
+	   for(var id in ids) {
+	   	 coll.remove({"_id": id});
+	   };
+	}).then((c){
+	   data['deleted_staff_ids'] = ids;
+	   completer.complete(Json.stringify(data));
+	   db.close();
+	}); 	
+  	return completer.future;
+  }
 
 }

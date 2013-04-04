@@ -1586,13 +1586,13 @@ $$._AllMatchesIterable = {"": "Iterable;_re,_str",
   }
 };
 
-$$._AllMatchesIterator = {"": "Object;_re,_str,_liblib5$_current",
+$$._AllMatchesIterator = {"": "Object;_re,_str,_liblib4$_current",
   get$current: function() {
-    return this._liblib5$_current;
+    return this._liblib4$_current;
   },
   moveNext$0: function() {
-    this._liblib5$_current = this._re.firstMatch$1(this._str);
-    return this._liblib5$_current != null;
+    this._liblib4$_current = this._re.firstMatch$1(this._str);
+    return this._liblib4$_current != null;
   }
 };
 
@@ -4570,10 +4570,10 @@ $$.FilteredElementList__filtered_anon = {"": "Closure;",
   }
 };
 
-$$._AttributeClassSet = {"": "CssClassSet;_liblib4$_element",
+$$._AttributeClassSet = {"": "CssClassSet;_liblib5$_element",
   readClasses$0: function() {
     var t1, classname, s, trimmed;
-    t1 = $.get$attributes$x(this._liblib4$_element);
+    t1 = $.get$attributes$x(this._liblib5$_element);
     classname = t1.$index(t1, "class");
     s = $.LinkedHashSet$();
     if (classname == null)
@@ -4586,7 +4586,7 @@ $$._AttributeClassSet = {"": "CssClassSet;_liblib4$_element",
     return s;
   },
   writeClasses$1: function(s) {
-    var t1 = $.get$attributes$x(this._liblib4$_element);
+    var t1 = $.get$attributes$x(this._liblib5$_element);
     t1.$indexSet(t1, "class", s.join$1(s, " "));
   }
 };
@@ -4752,7 +4752,7 @@ $$.AppController = {"": "Object;_localData,_view<",
   attachEventDeleteStaffs$2: function(element, eventType) {
     switch (eventType) {
       case "onClick":
-        $.get$onClick$x(element).listen$1(new $.AppController_attachEventDeleteStaffs_anon(this));
+        $.get$onClick$x(element).listen$1(new $.AppController_attachEventDeleteStaffs_anon(this, element));
         break;
     }
   },
@@ -5027,22 +5027,31 @@ $$.AppController_attachEventAddStaff__anon = {"": "Closure;this_1",
   }
 };
 
-$$.AppController_attachEventDeleteStaffs_anon = {"": "Closure;this_0",
+$$.AppController_attachEventDeleteStaffs_anon = {"": "Closure;this_0,element_1",
   call$1: function(e) {
-    var t1, t2;
+    var t1, t2, ids, uri;
     t1 = this.this_0;
     t2 = t1.get$localData().get$staff_ids();
     if (t2.get$length(t2) === 0)
       return;
     t2 = t1.get$localData().get$staff_ids();
-    $.HttpRequest_request("/deleteStaffsInfo?staff_ids=" + $.encodeUriComponent(t2.join$1(t2, ",")), null, null, null, null, null).then$1(new $.AppController_attachEventDeleteStaffs__anon(t1));
+    ids = $.encodeUriComponent(t2.join$1(t2, ","));
+    t2 = $.get$classes$x(this.element_1);
+    uri = t2.any$1(t2, new $.AppController_attachEventDeleteStaffs__anon()) ? "/deleteStaffsInfo?staff_ids=" + ids + "&mongo=true" : "/deleteStaffsInfo?staff_ids=" + ids;
+    $.HttpRequest_request(uri, null, null, null, null, null).then$1(new $.AppController_attachEventDeleteStaffs__anon0(t1));
   }
 };
 
-$$.AppController_attachEventDeleteStaffs__anon = {"": "Closure;this_1",
+$$.AppController_attachEventDeleteStaffs__anon = {"": "Closure;",
+  call$1: function(c) {
+    return $.$eq(c, "mongoDB");
+  }
+};
+
+$$.AppController_attachEventDeleteStaffs__anon0 = {"": "Closure;this_2",
   call$1: function(request) {
     var t1, t2;
-    t1 = this.this_1;
+    t1 = this.this_2;
     t1.get$_view().deleteRows$1(t1.get$localData().get$staff_ids());
     t2 = $.HashSet$();
     t1.get$localData().set$staff_ids(t2);
@@ -5083,7 +5092,7 @@ $$.AppViewRenderer = {"": "Object;_controller",
     this.renderDebugInfo$2("client", t1.toString$0(t1));
   },
   renderTable$1: function(jsonResponse) {
-    var staffTable, t1, staffs, t2, t3, t4, staff, sb, t5, t6, t7;
+    var staffTable, t1, staffs, t2, t3, t4, staff, sb, t5, t6, t7, deleteBtn;
     this.toogleDisplayMode$1("display");
     staffTable = $.query$1$x(document, "#staff-table");
     t1 = $.getInterceptor$x(staffTable);
@@ -5093,7 +5102,7 @@ $$.AppViewRenderer = {"": "Object;_controller",
     for (t2 = $.get$iterator$ax(staffs.get$keys()), t3 = $.getInterceptor$asx(staffs); t2.moveNext$0();) {
       t4 = t2.get$current();
       if (typeof t4 !== "string")
-        return this.renderTable$1$bailout(1, t2, staffs, t1, t3, staffTable, t4);
+        return this.renderTable$1$bailout(1, staffTable, staffs, t1, t3, t2, t4);
       if (t4 === "total" || t4 === "next" || t4 === "previous" || t4 === "mongoDB")
         break;
       staff = t3.$index(staffs, t4);
@@ -5134,14 +5143,21 @@ $$.AppViewRenderer = {"": "Object;_controller",
       t2 = "total records: " + $.S(t1.get$total(t1));
       $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t2;
     }
-    if (staffs.containsKey$1("mongoDB") === true)
+    deleteBtn = $.query$1$x(document, "#delete");
+    t1 = $.getInterceptor$x(deleteBtn);
+    if (staffs.containsKey$1("mongoDB") === true) {
       this.updatePaginationLeftRight$3$isMongoDB(staffs.containsKey$1("previous"), staffs.containsKey$1("next"), true);
-    else
+      t1 = t1.get$classes(deleteBtn);
+      t1.add$1(t1, "mongoDB");
+    } else {
       this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
+      t1 = t1.get$classes(deleteBtn);
+      t1.remove$1(t1, "mongoDB");
+    }
     if (staffs.containsKey$1("mongoDB") === true)
       this.toggleSearchWarning$2$isShown$message(true, "data read from MongoDB");
   },
-  renderTable$1$bailout: function(state0, t2, staffs, t1, t3, staffTable, t4) {
+  renderTable$1$bailout: function(state0, staffTable, staffs, t1, t3, t2, t4) {
     switch (state0) {
       case 0:
         this.toogleDisplayMode$1("display");
@@ -5153,7 +5169,7 @@ $$.AppViewRenderer = {"": "Object;_controller",
         t2 = $.get$iterator$ax(staffs.get$keys());
         t3 = $.getInterceptor$asx(staffs);
       case 1:
-        var t5, staff, sb, t6, t7;
+        var t5, staff, sb, t6, t7, deleteBtn;
         L0:
           while (true)
             switch (state0) {
@@ -5204,10 +5220,17 @@ $$.AppViewRenderer = {"": "Object;_controller",
           t2 = "total records: " + $.S(t1.get$total(t1));
           $.getInterceptor$x($.query$1$x(document, "#total-count")).textContent = t2;
         }
-        if (staffs.containsKey$1("mongoDB") === true)
+        deleteBtn = $.query$1$x(document, "#delete");
+        t1 = $.getInterceptor$x(deleteBtn);
+        if (staffs.containsKey$1("mongoDB") === true) {
           this.updatePaginationLeftRight$3$isMongoDB(staffs.containsKey$1("previous"), staffs.containsKey$1("next"), true);
-        else
+          t1 = t1.get$classes(deleteBtn);
+          t1.add$1(t1, "mongoDB");
+        } else {
           this.updatePaginationLeftRight$2(staffs.containsKey$1("previous"), staffs.containsKey$1("next"));
+          t1 = t1.get$classes(deleteBtn);
+          t1.remove$1(t1, "mongoDB");
+        }
         if (staffs.containsKey$1("mongoDB") === true)
           this.toggleSearchWarning$2$isShown$message(true, "data read from MongoDB");
     }

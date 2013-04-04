@@ -66,15 +66,20 @@ class AppViewRenderer {
      document.query("#total-count").text = "total records: ${controller.localData.total}";   
    }
    
-   if( staffs.containsKey("mongoDB") ) 
+   ButtonElement deleteBtn = document.query("#delete");
+   if( staffs.containsKey("mongoDB") ) {
 	   updatePaginationLeftRight(staffs.containsKey("previous"),
 								 staffs.containsKey("next"),
 								 isMongoDB: true
-	   );    
-   else
+	   ); 
+	   deleteBtn.classes.add("mongoDB"); 
+   }  
+   else {
 		updatePaginationLeftRight(staffs.containsKey("previous"),
 								 staffs.containsKey("next")
-	   );  
+	   ); 
+	   deleteBtn.classes.remove("mongoDB");  
+   }
    if( staffs.containsKey("mongoDB"))
      toggleSearchWarning(isShown: true, message: "data read from MongoDB");
  }
@@ -119,7 +124,6 @@ class AppViewRenderer {
 	  nextBtn.classes.add("mongoDB");
 	}
 	else {
-// 	window.alert(previousBtn.classes.toString());
       previousBtn.classes.remove("mongoDB");
 	  nextBtn.classes.remove("mongoDB");
 	}

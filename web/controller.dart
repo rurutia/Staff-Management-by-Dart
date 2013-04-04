@@ -292,11 +292,15 @@ class AppController {
     		  if( localData.staff_ids.length == 0 )
     		    return;
     		  String ids = encodeUriComponent(localData.staff_ids.join(',').toString());
-           	  String uri = "/deleteStaffsInfo?staff_ids=${ids}";
-			
+    		  String uri;
+    		  if( element.classes.any((c) => c == "mongoDB" ) )
+           	    uri = "/deleteStaffsInfo?staff_ids=${ids}&mongo=true";
+			  else
+           	    uri = "/deleteStaffsInfo?staff_ids=${ids}";			  
            	  HttpRequest.request(uri).then(
-              (request) {                
-                 _view.deleteRows(localData.staff_ids);
+              (request) {        
+//               window.alert(request.responseText);        
+                _view.deleteRows(localData.staff_ids);
                  localData.staff_ids = new Set<String>();
                  _view.renderDebugInfo("json", request.responseText);
                });
