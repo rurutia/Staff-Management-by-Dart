@@ -1,9 +1,6 @@
 <h3>Development Log</h3>
-<<<<<<< HEAD
-<br># 
-=======
+<br>#06/04 Dao classes bugs fixed. App can run in Dart editor IDE under Linux Mint 
 <br>#04/04 Deletion with MongoDB implemented.  
->>>>>>> readme
 <br>#03/04 New UrlParamParser("utility.dart") implementation utilizing HttpRequest QueryParameter property.
 <br>#02/04 Pagination with MongoDB implemented.
 <br>#31/03 Experimental MongoDB support added.

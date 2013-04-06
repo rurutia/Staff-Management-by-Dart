@@ -2,7 +2,7 @@
 part of staff_management;
 
 // concrete DAO class (MongoDB implementation)
-class DaoMongoDBImpl implements Dao {
+class DaoMongoDBImpl {
    // initial documents in database
    List _documents = [
                                  {
@@ -72,7 +72,7 @@ class DaoMongoDBImpl implements Dao {
                                  
                       ];
    
-   String get documents => this._documents;
+   List get documents => this._documents;
    set data(List documents) => this._documents = documents;
    
    Db db;

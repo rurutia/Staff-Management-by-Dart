@@ -5,9 +5,10 @@ import "dart:json" as Json;
 import "dart:io";
 import "dart:uri";
 import "dart:async";
-import "package:stream/stream.dart";
+import 'package:stream/stream.dart';
 import "package:xml/xml.dart";
 import 'package:mongo_dart/mongo_dart.dart';
+
 
 part "config.dart";
 part "dao.dart";
@@ -17,8 +18,8 @@ part "utility.dart";
 
 // Data Access Object responsible for business logic and performing data operation
 // both XML and database will be supported
-Dao _dao;
-Dao get dao => _dao;
+DaoXmlImpl _dao;
+DaoXmlImpl get dao => _dao;
 
 void main() {
   new StreamServer(uriMapping: _mapping).start();
@@ -32,8 +33,8 @@ void main() {
 void loadStaffsInfo(HttpConnect connect) {
   // process request uri
   UriParamParser parser = new UriParamParser(connect.request);
-  int start = parser.getParamValue('start', type:UriParamParser.TYPE_INT);
-  int count = parser.getParamValue('count', type:UriParamParser.TYPE_INT);
+  int start = int.parse(parser.getParamValue('start', type:UriParamParser.TYPE_INT));
+  int count = int.parse(parser.getParamValue('count', type:UriParamParser.TYPE_INT));
   String keyword = parser.getParamValue('keyword');
   
   // Dart MongoDB test, experimental codes which will be improved in future
@@ -42,7 +43,7 @@ void loadStaffsInfo(HttpConnect connect) {
     DaoMongoDBImpl daoMongo = new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');
     var future = daoMongo.getStaffs(start, count);
     future.then((results) {
-   	  String str = results;
+      String str = results;
       sendResponse(connect, str);   
     });  
     return;
@@ -51,7 +52,7 @@ void loadStaffsInfo(HttpConnect connect) {
   
   // call dao to perform business logic
   String jsonResponse
-		   = (keyword == null) ? dao.getStaffs(start, count):dao.searchStaffs(start, count, keyword);
+       = (keyword == null) ? dao.getStaffs(start, count):dao.searchStaffs(start, count, keyword);
  
    sendResponse(connect, jsonResponse);
 }
@@ -60,16 +61,16 @@ void deleteStaffsInfo(HttpConnect connect) {
   // process request uri
   UriParamParser parser = new UriParamParser(connect.request);
   List<String> staff_ids = parser.getParamValue('staff_ids', 
-  											type:UriParamParser.TYPE_LIST_STRING, 
-  											pattern: new RegExp(","));
-  											
+                        type:UriParamParser.TYPE_LIST_STRING, 
+                        pattern: new RegExp(","));
+                        
   // Dart MongoDB test, experimental codes which will be improved in future
   // Feel free to comment out to ignore MongoDB part of the application 
   if( parser.containsParam('mongo') ) { 
-    DaoMongoDBImpl daoMongo = new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');	
+    DaoMongoDBImpl daoMongo = new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs'); 
     var future = daoMongo.deleteStaffsByIDs(staff_ids);
     future.then((results) {
-   	  String str = results;
+      String str = results;
       sendResponse(connect, str);   
     });  
     return;
@@ -84,8 +85,8 @@ void deleteStaffsInfo(HttpConnect connect) {
 void recoverStaffsInfo(HttpConnect connect) {
   // process request uri
   UriParamParser parser = new UriParamParser(connect.request);
-  int start = parser.getParamValue('start', type:UriParamParser.TYPE_INT);
-  int count = parser.getParamValue('count', type:UriParamParser.TYPE_INT);
+  int start = int.parse(parser.getParamValue('start', type:UriParamParser.TYPE_INT));
+  int count = int.parse(parser.getParamValue('count', type:UriParamParser.TYPE_INT));
   // call dao to perform business logic
   dao.recoverStaffs();
   
@@ -96,10 +97,10 @@ void recoverStaffsInfo(HttpConnect connect) {
 void addNewStaff(HttpConnect connect) {
   // process request uri
   UriParamParser parser = new UriParamParser(connect.request);
-  int employeeNo = parser.getParamValue('no', type:UriParamParser.TYPE_INT);
+  int employeeNo = int.parse(parser.getParamValue('no', type:UriParamParser.TYPE_INT));
   String name = parser.getParamValue('name');
   String position = parser.getParamValue('position');
-  int yearJoin = parser.getParamValue('year', type:UriParamParser.TYPE_INT);
+  int yearJoin = int.parse(parser.getParamValue('year', type:UriParamParser.TYPE_INT));
   
   // call dao to perform business logic
   dao.addNewStaff(employeeNo, name, position, yearJoin);
@@ -114,3 +115,4 @@ void sendResponse(HttpConnect connect, String response, {String type:"json"}) {
     ..write(response);
   connect.close();
 }
+

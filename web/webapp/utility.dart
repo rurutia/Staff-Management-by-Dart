@@ -11,12 +11,12 @@ class UriParamParser {
   	_params = request.queryParameters;
   }
     
-  String getParamValue(String param, {String type: "string", RegExp pattern}) {
+  dynamic getParamValue(String param, {String type: "string", RegExp pattern}) {
     switch(type) {
-      case TYPE_INT:
-        return int.parse(_params[param]);
+      case "int":
+        return _params[param];
         
-      case TYPE_LIST_STRING:
+      case "list_string":
         return _params[param].split(pattern);
         
       default:
