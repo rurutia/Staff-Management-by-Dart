@@ -19,14 +19,11 @@ part "utility.dart";
 // both XML and database will be supported
 Dao _dao;
 Dao get dao => _dao;
-DaoMongoDBImpl daoMongo;
 
 void main() {
   new StreamServer(uriMapping: _mapping).start();
   // initialize Data Access Object with XML implementation, will be database in future
   _dao = new DaoXmlImpl('web/webapp/data.xml');
-  // DAO with MongoDB implementaion (experimental)
-  daoMongo = new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');
   // process XML file
   dao.processXML();
 }
@@ -42,6 +39,7 @@ void loadStaffsInfo(HttpConnect connect) {
   // Dart MongoDB test, experimental codes which will be improved in future
   // Feel free to comment out to ignore MongoDB part of the application 
   if( parser.containsParam('mongo') ) {
+    DaoMongoDBImpl daoMongo = new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');
     var future = daoMongo.getStaffs(start, count);
     future.then((results) {
    	  String str = results;
@@ -67,7 +65,8 @@ void deleteStaffsInfo(HttpConnect connect) {
   											
   // Dart MongoDB test, experimental codes which will be improved in future
   // Feel free to comment out to ignore MongoDB part of the application 
-  if( parser.containsParam('mongo') ) { 	
+  if( parser.containsParam('mongo') ) { 
+    DaoMongoDBImpl daoMongo = new DaoMongoDBImpl('mongodb://127.0.0.1', 'mongo-dart-test', 'staffs');	
     var future = daoMongo.deleteStaffsByIDs(staff_ids);
     future.then((results) {
    	  String str = results;
